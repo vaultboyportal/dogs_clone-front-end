@@ -158,7 +158,9 @@ function Game() {
     const handleTouchStart = useCallback((event) => {
         const touchX = event.touches[0].clientX;
         const halfScreenWidth = window.innerWidth / 2;
-
+        if (isGameOver) {
+            start();
+        }
         if (touchX < halfScreenWidth) {
             setDirection('left');
         } else {
