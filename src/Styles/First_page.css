@@ -1,4 +1,7 @@
-
+body {
+    text-rendering: optimizeSpeed;
+    line-height: 1.5;
+}
 .welcome-page {
     display: flex;
     flex-direction: column;
@@ -14,6 +17,7 @@
     height: auto;
     border-radius: 12px;
     margin-bottom: 24px;
+
 }
 
 .welcome-text {

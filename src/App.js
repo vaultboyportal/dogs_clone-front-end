@@ -1,21 +1,42 @@
 import logo from './logo.svg';
 import './App.css';
-import {useEffect} from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 import WelcomePage from "./Pages/First_page";
 import SecondPage from "./Pages/Second_page";
+import LastPage from "./Pages/Last_page";
+import HomePage from "./Pages/home_page";
+import BottomNavbar from "./Pages/bottomNavbar";
+import LeaderboardPage from "./Pages/leaderboard";
+import InviteFriends from "./Pages/inviteFriends";
 
 function App() {
-  return (
-      <Router>
+    // Получаем текущий путь из useLocation
+    const location = useLocation();
+
+    // Определяем, нужно ли показывать BottomNavbar
+    const showBottomNavbar = location.pathname !== '/' && location.pathname !== '/second' && location.pathname !== '/last_check';
+
+    return (
         <div className="App">
-          <Routes>
-            <Route path="/" element={<WelcomePage />} />
-            <Route path="/second" element={<SecondPage />} />
-          </Routes>
+            <Routes>
+                <Route path="/" element={<WelcomePage />} />
+                <Route path="/second" element={<SecondPage />} />
+                <Route path="/last_check" element={<LastPage />} />
+                <Route path="/home" element={<HomePage />} />
+                <Route path="/leaderboard" element={<LeaderboardPage/>}/>
+                <Route path="/invite" element={<InviteFriends/>}/>
+            </Routes>
+            {showBottomNavbar && <BottomNavbar />}
         </div>
-      </Router>
-  );
+    );
 }
 
-export default App;
+function AppWrapper() {
+    return (
+        <Router>
+            <App />
+        </Router>
+    );
+}
+
+export default AppWrapper;
