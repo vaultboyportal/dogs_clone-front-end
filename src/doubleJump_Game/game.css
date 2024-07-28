@@ -2,11 +2,6 @@
 body{
     overflow: hidden;
 }
-code {
-    font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
-}
-
 
 .grid {
     overflow: hidden;
@@ -14,39 +9,39 @@ code {
     height: 100vh;
     border-radius: 10px;
     border-color: white;
-    background-color: gold;
+    background-color: #ffd687;
     position: relative;
     font-size: 200px;
     text-align: center;
 }
 
 .doodler {
-    width: 60px;
-    height: 85px;
-    background-color: #ffba4b;
+    width: 25%;
+    height: 15%;
     position: absolute;
-    border-radius: 5px;
+    border-radius: 1px;
 }
 
 .platform {
     width: 85px;
     height: 15px;
-    background-color: #12b4ff;
+    background-color: #a06c20;
     position: absolute;
-    border-radius: 5px;
+    border-radius: 1px;
 }
 
 .instructions {
     font-size: 6vw;
-    font-weight: bold;
     margin: 1em;
-    color: #12b4ff;
+    margin-top: 50%;
+    color: black;
     background-color: white;
     border-radius: 10px;
     line-height: 1.5;
 }
 
 .score {
+    user-select: none;
     text-align: center;
     font-size: 12vw;
     color: white;
@@ -54,16 +49,4 @@ code {
     width: 100%;
     border-radius: 10px;
     margin-right: 0.5em;
-}
-.flex {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    background-color: #4bff9f;
-    border-top: 2px solid #ff4bd5;
-}
-.twitter,
-.github {
-    height: 30px;
-    margin: 5px;
 }

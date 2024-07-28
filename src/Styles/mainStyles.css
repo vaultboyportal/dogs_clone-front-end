@@ -25,7 +25,7 @@
     font-size: 20px;
     font-style: normal;
     font-weight: 600;
-    color: #aaa
+    color: #599d49
 }
 
 ._root_oar9p_1 {
@@ -442,7 +442,7 @@
     font-size: 15px;
     font-weight: 590;
     line-height: 20px;
-    color: #a6a6a6
+    color: #599d49
 }
 
 ._after_1wi4k_45 {
@@ -878,8 +878,8 @@ html {
 body {
     font-family: var(--font-display),sans-serif;
     font-weight: 400;
-    color: var(--color-text-primary);
-    background-color: #155a6b;
+    color: #a06c20;
+    background-color: #ffd687;
     height: 100vh;
     font-smoothing: antialiased;
     -webkit-font-smoothing: antialiased;
@@ -1080,7 +1080,6 @@ body {
 }
 
 ._buttonWrap_1x19s_70 {
-    background-color: #000;
     padding: 16px;
     position: fixed;
     left: 0;

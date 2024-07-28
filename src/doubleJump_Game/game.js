@@ -13,8 +13,9 @@ function Platforms({ platforms }) {
 
 function Doodler({ doodler }) {
     return (
-        <div
+        <img
             className="doodler"
+            src={`${process.env.PUBLIC_URL}/resources_directory/13A8E8C5-B501-4EA6-B4AC-6BD22BD7A9BA.webp`}
             style={{
                 left: `${doodler.left}px`,
                 bottom: `${doodler.bottom}px`,
@@ -31,7 +32,7 @@ function Game() {
     const [direction, setDirection] = useState('none');
 
     const platformCount = 5;
-    const startPoint = 150;
+    const startPoint = 100;
 
     const makeOneNewPlatform = useCallback((bottom) => {
         const left = Math.random() * 315;
@@ -47,7 +48,7 @@ function Game() {
                 }));
                 if (newPlatforms[0].bottom < 10) {
                     newPlatforms.shift();
-                    setScore((prevScore) => prevScore + 1);
+                    setScore((prevScore) => prevScore + 5);
                     newPlatforms.push(makeOneNewPlatform(600));
                 }
                 return newPlatforms;
@@ -66,7 +67,7 @@ function Game() {
             if (prevDoodler.bottom <= 0) {
                 gameOver();
             }
-            return { ...prevDoodler, bottom: prevDoodler.bottom - 5, left: newLeft };
+            return { ...prevDoodler, bottom: prevDoodler.bottom - 7, left: newLeft };
         });
     }, [direction]);
 
@@ -184,19 +185,8 @@ function Game() {
         }
     }, [isGameOver, start]);
 
-    useEffect(() => {
-        window.addEventListener('keydown', handleKeyDown);
-        window.addEventListener('touchstart', handleTouchStart);
-        window.addEventListener('touchend', handleTouchEnd);
-        return () => {
-            window.removeEventListener('keydown', handleKeyDown);
-            window.removeEventListener('touchstart', handleTouchStart);
-            window.removeEventListener('touchend', handleTouchEnd);
-        };
-    }, [handleKeyDown, handleTouchStart, handleTouchEnd]);
-
     return (
-        <div className="grid">
+        <div className="grid" onKeyDown={handleKeyDown} onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd} >
             {!isGameOver ? (
                 <>
                     <div className="score">{score}</div>
