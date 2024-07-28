@@ -166,7 +166,7 @@ function Game() {
         } else {
             setDirection('right');
         }
-    }, []);
+    }, [isGameOver, start]);
 
     const handleTouchEnd = useCallback(() => {
         setDirection('none');
