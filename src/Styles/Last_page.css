@@ -3,7 +3,7 @@
     overflow-y: hidden;
     overflow-x: hidden;
     padding-top: 0;
-    background: black;
+    background: #216A36;
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
@@ -14,7 +14,7 @@
     display: -webkit-box;
     display: -webkit-flex;
     display: -moz-box;
-    background: black;
+    background: #216A36;
     display: flex;
     -webkit-box-orient: vertical;
     -webkit-box-direction: normal;

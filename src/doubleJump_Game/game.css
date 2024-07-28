@@ -1,5 +1,7 @@
 
-
+body{
+    overflow: hidden;
+}
 code {
     font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
@@ -7,6 +9,7 @@ code {
 
 
 .grid {
+    overflow: hidden;
     width: 100%;
     height: 100vh;
     border-radius: 10px;
