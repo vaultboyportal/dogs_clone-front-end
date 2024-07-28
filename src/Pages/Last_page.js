@@ -46,7 +46,7 @@ const LastPage = () => {
                     ) : (
                         <>
                             <div className="_title_mgd6s_24">You are amazing!</div>
-                            <div className="_subTitle_mgd6s_34">Here is your DOGS reward</div>
+                            <div className="_subTitle_mgd6s_34">Here is your $UP reward</div>
                             <div className="_valueWrap_mgd6s_42">
                                 <div className="_value_mgd6s_42">
                                     <img   src={`${process.env.PUBLIC_URL}/resources_directory/13A8E8C5-B501-4EA6-B4AC-6BD22BD7A9BA.webp`}

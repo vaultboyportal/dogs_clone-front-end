@@ -30,7 +30,7 @@ function Game() {
     const [doodler, setDoodler] = useState({});
     const [score, setScore] = useState(0);
     const [direction, setDirection] = useState('none');
-
+    const [speedFactor, setSpeedFactor] = useState(1);
     const platformCount = 5;
     const startPoint = 100;
 
@@ -44,45 +44,51 @@ function Game() {
             setPlatforms((prevPlatforms) => {
                 const newPlatforms = prevPlatforms.map((platform) => ({
                     ...platform,
-                    bottom: platform.bottom - 4,
+                    bottom: platform.bottom - 4 * speedFactor,
                 }));
                 if (newPlatforms[0].bottom < 10) {
                     newPlatforms.shift();
-                    setScore((prevScore) => prevScore + 5);
+                    setScore((prevScore) => {
+                        const newScore = prevScore + 5;
+                        if (newScore % 100 === 0) {
+                            setSpeedFactor((prevSpeedFactor) => prevSpeedFactor + 0.2);
+                        }
+                        return newScore;
+                    });
                     newPlatforms.push(makeOneNewPlatform(600));
                 }
                 return newPlatforms;
             });
         }
-    }, [doodler.bottom, makeOneNewPlatform]);
+    }, [doodler.bottom, makeOneNewPlatform, speedFactor]);
 
     const fall = useCallback(() => {
         setDoodler((prevDoodler) => {
             let newLeft = prevDoodler.left;
             if (direction === 'left' && prevDoodler.left > 0) {
-                newLeft = prevDoodler.left - 5;
+                newLeft = prevDoodler.left - 5 * speedFactor;
             } else if (direction === 'right' && prevDoodler.left < 340) {
-                newLeft = prevDoodler.left + 5;
+                newLeft = prevDoodler.left + 5 * speedFactor;
             }
             if (prevDoodler.bottom <= 0) {
                 gameOver();
             }
-            return { ...prevDoodler, bottom: prevDoodler.bottom - 7, left: newLeft };
+            return { ...prevDoodler, bottom: prevDoodler.bottom - 5 * speedFactor, left: newLeft };
         });
-    }, [direction]);
+    }, [direction, speedFactor]);
 
     const jump = useCallback(() => {
         setDoodler((prevDoodler) => {
             let newLeft = prevDoodler.left;
             if (direction === 'left' && prevDoodler.left > 0) {
-                newLeft = prevDoodler.left - 5;
+                newLeft = prevDoodler.left - 5 * speedFactor;
             } else if (direction === 'right' && prevDoodler.left < 340) {
-                newLeft = prevDoodler.left + 5;
+                newLeft = prevDoodler.left + 5 * speedFactor;
             }
             if (prevDoodler.bottom > prevDoodler.startPoint + 200) {
                 return { ...prevDoodler, isJumping: false };
             }
-            return { ...prevDoodler, bottom: prevDoodler.bottom + 20, left: newLeft };
+            return { ...prevDoodler, bottom: prevDoodler.bottom + 20 * speedFactor, left: newLeft };
         });
     }, [direction]);
 
@@ -154,6 +160,7 @@ function Game() {
         setScore(0);
         setPlatforms(newPlatforms);
         setDoodler(createDoodler(startPoint, doodlerLeft));
+        setSpeedFactor(1);
     }, [createDoodler, createPlatforms]);
 
     const handleTouchStart = useCallback((event) => {

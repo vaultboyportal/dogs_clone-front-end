@@ -93,8 +93,8 @@
 }
 
 ._type-white_oar9p_43 {
-    background-color: #fff;
-    color: #000;
+    background-color: #599d49;
+    color: white;
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
@@ -120,7 +120,7 @@
 }
 
 ._type-dark_oar9p_58 {
-    background-color: #282828;
+    background-color: #599d49;
     color: #fff;
     -webkit-user-select: none;
     -moz-user-select: none;
@@ -139,7 +139,7 @@
     -webkit-transition-duration: 0s;
     -moz-transition-duration: 0s;
     transition-duration: 0s;
-    background-color: #171717
+    background-color: #599d49
 }
 
 ._type-dark_oar9p_58._disabled_oar9p_23:active,._type-dark_oar9p_58._disabled_oar9p_23:hover,._type-dark_oar9p_58._loading_oar9p_27:active,._type-dark_oar9p_58._loading_oar9p_27:hover {
@@ -168,7 +168,7 @@
 }
 
 ._type-blue_oar9p_88 {
-    background-color: #007aff;
+    background-color: #599d49;
     color: #fff
 }
 
@@ -399,7 +399,7 @@
     overflow: hidden;
     -webkit-flex-shrink: 0;
     flex-shrink: 0;
-    background-color: #323232;
+    background-color: #599d49;
     display: -webkit-box;
     display: -webkit-flex;
     display: -moz-box;
@@ -485,8 +485,8 @@
 }
 
 ._width-82_94k9d_23 {
-    width: 40vw;
-    height: 40vw;
+    width: 50vw;
+    height: 50vw;
     min-height: 84px
 }
 
@@ -878,7 +878,7 @@ html {
 body {
     font-family: var(--font-display),sans-serif;
     font-weight: 400;
-    color: #a06c20;
+    color: black;
     background-color: #ffd687;
     height: 100vh;
     font-smoothing: antialiased;
@@ -1406,7 +1406,7 @@ body {
     overflow: hidden;
     -webkit-flex-shrink: 0;
     flex-shrink: 0;
-    background-color: #323232;
+    background-color: #599d49;
     display: -webkit-box;
     display: -webkit-flex;
     display: -moz-box;
@@ -1780,6 +1780,7 @@ button.swiper-pagination-bullet {
     border-radius: 16px;
     background: #1a1a1a;
     margin-top: 24px;
+    color: white;
     width: 100%;
     display: -webkit-box;
     display: -webkit-flex;
@@ -1992,7 +1993,7 @@ button.swiper-pagination-bullet {
 
 ._me_zhpdf_13 {
     border-radius: 12px;
-    background: #1c1c1e;
+    background: #599d49;
     padding-left: 14px;
     padding-right: 16px;
     margin-bottom: 16px;
@@ -2059,7 +2060,7 @@ button.swiper-pagination-bullet {
     font-size: 15px;
     font-weight: 590;
     line-height: 20px;
-    color: #a6a6a6;
+    color: black;
     display: -webkit-box;
     display: -webkit-flex;
     display: -moz-box;

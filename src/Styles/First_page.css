@@ -8,7 +8,6 @@ body {
     align-items: center;
     justify-content: center;
     height: 100vh;
-    background-color: black;
     box-sizing: border-box;
 }
 
@@ -22,21 +21,16 @@ body {
 
 .welcome-text {
     font-size: 7vw;
-    color: white;
     margin: 0;
     text-align: center;
 }
 
 .welcome-subtext {
     font-size: 5vw;
-    color: white;
     text-align: center;
     margin-top: 8px;
 }
-._type-blue_oar9p_88 {
-    background-color: #007aff;
-    color: #fff;
-}
+
 ._root_oar9p_1 {
     padding: 0 16px;
     text-align: center;

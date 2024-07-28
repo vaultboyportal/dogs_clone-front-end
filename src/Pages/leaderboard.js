@@ -20,7 +20,7 @@ const LeaderboardPage = () => {
                                                                  loading="lazy" alt="Avatar"/></div>
                             <div className="_body_iud9y_25">
                                 <div className="_text_iud9y_47">bogdan_krvsk</div>
-                                <div className="_footer_iud9y_32">5,973 DOGS</div>
+                                <div className="_footer_iud9y_32">5,973 $UP</div>
                             </div>
                             <div className="_details_iud9y_56">#7349586</div>
                         </div>
@@ -32,7 +32,7 @@ const LeaderboardPage = () => {
                                                              loading="lazy" alt="Avatar"/></div>
                         <div className="_body_iud9y_25">
                             <div className="_text_iud9y_47">elkanadi</div>
-                            <div className="_footer_iud9y_32">17,790,901 DOGS</div>
+                            <div className="_footer_iud9y_32">17,790,901 $UP</div>
                         </div>
                         <div className="_details_iud9y_56"><span className="_medal_iud9y_66">🥇</span></div>
                     </div>

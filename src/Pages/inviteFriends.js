@@ -23,7 +23,7 @@ const InvitePage = () => {
                             </div>
                         </div>
                     </div>
-                    <div className="_title_1x19s_5">Invite friends<br/> and get more DOGS</div>
+                    <div className="_title_1x19s_5">Invite friends<br/> and get more $UP</div>
                     <div className="_mascote_94k9d_1 _centered_94k9d_13">
 
                         <img id="home-mascote"
