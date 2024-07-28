@@ -1,0 +1,66 @@
+
+
+code {
+    font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+
+.grid {
+    width: 400px;
+    height: 100vh;
+    border-radius: 10px;
+    border-color: white;
+    background-color: gold;
+    position: relative;
+    font-size: 200px;
+    text-align: center;
+}
+
+.doodler {
+    width: 60px;
+    height: 85px;
+    background-color: #ffba4b;
+    position: absolute;
+    border-radius: 5px;
+}
+
+.platform {
+    width: 85px;
+    height: 15px;
+    background-color: #12b4ff;
+    position: absolute;
+    border-radius: 5px;
+}
+
+.instructions {
+    font-size: 6vw;
+    font-weight: bold;
+    margin: 1em;
+    color: #12b4ff;
+    background-color: white;
+    border-radius: 10px;
+    line-height: 1.5;
+}
+
+.score {
+    text-align: center;
+    font-size: 12vw;
+    color: white;
+    top: 10px;
+    width: 100%;
+    border-radius: 10px;
+    margin-right: 0.5em;
+}
+.flex {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    background-color: #4bff9f;
+    border-top: 2px solid #ff4bd5;
+}
+.twitter,
+.github {
+    height: 30px;
+    margin: 5px;
+}

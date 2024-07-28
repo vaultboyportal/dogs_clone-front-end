@@ -8,11 +8,10 @@ import HomePage from "./Pages/home_page";
 import BottomNavbar from "./Pages/bottomNavbar";
 import LeaderboardPage from "./Pages/leaderboard";
 import InviteFriends from "./Pages/inviteFriends";
-
+import Game from "./doubleJump_Game/game";
 function App() {
     // Получаем текущий путь из useLocation
     const location = useLocation();
-
     // Определяем, нужно ли показывать BottomNavbar
     const showBottomNavbar = location.pathname !== '/' && location.pathname !== '/second' && location.pathname !== '/last_check';
 
@@ -25,6 +24,7 @@ function App() {
                 <Route path="/home" element={<HomePage />} />
                 <Route path="/leaderboard" element={<LeaderboardPage/>}/>
                 <Route path="/invite" element={<InviteFriends/>}/>
+                <Route path="/game" element={<Game />} />
             </Routes>
             {showBottomNavbar && <BottomNavbar />}
         </div>

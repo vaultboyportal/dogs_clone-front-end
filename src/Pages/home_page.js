@@ -40,21 +40,12 @@ const HomePage = () => {
                     <div className="_socialCarousel_1xku1_1">
                         <div className="swiper swiper-initialized swiper-horizontal swiper-backface-hidden">
                             <div className="swiper-wrapper">
-                                <div className="swiper-slide swiper-slide-active" style={{width: "376.636px"}}>
+                                <div className="swiper-slide swiper-slide-active" style={{width: "100%"}}>
                                     <div className="_itemWrap_1xku1_16 _itemWrapFirst_1xku1_20">
                                         <div className="_item_1xku1_6">
                                             <div className="_title_1xku1_28">DOGS COMMUNITY</div>
                                             <div className="_text_1xku1_34">Home for Telegram OGs</div>
                                             <div className="_button_1xku1_41">Join</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="swiper-slide swiper-slide-next" style={{width: "376.636px"}}>
-                                    <div className="_itemWrap_1xku1_16 _itemWrapLast_1xku1_23">
-                                        <div className="_item_1xku1_6">
-                                            <div className="_title_1xku1_28">FOLOW US ON X.COM</div>
-                                            <div className="_text_1xku1_34">Stay updated with the latest news</div>
-                                            <div className="_button_1xku1_41">Follow</div>
                                         </div>
                                     </div>
                                 </div>
