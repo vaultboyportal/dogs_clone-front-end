@@ -17,11 +17,13 @@ function useQuery() {
 function App() {
     const location = useLocation();
     const query = useQuery();
-    const startapp = query.get('startapp');
-    
-    if (startapp) {
-        console.log("Startapp parameter:", startapp);
-    }
+    useEffect(() => {
+        const startParamValue = query.get('tgWebAppStartParam');
+        if (startParamValue) {
+            console.log('ParamsID:', refererId);
+        }
+    }, [query]);
+
     const showBottomNavbar = location.pathname !== '/' && location.pathname !== '/second' && location.pathname !== '/last_check';
 
     return (
