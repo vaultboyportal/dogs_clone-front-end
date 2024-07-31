@@ -1,3 +1,4 @@
+import React, { useState, useEffect } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
@@ -18,12 +19,21 @@ function App() {
     const location = useLocation();
     const query = useQuery();
     const [startParam, setStartParam] = useState('');
+    const [userData, setUserData] = useState(null);
 
     useEffect(() => {
         const startParamValue = query.get('tgWebAppStartParam');
         if (startParamValue) {
             setStartParam(startParamValue);
             console.log('ParamsID:', startParamValue);
+        }
+
+        if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe) {
+            const user = window.Telegram.WebApp.initDataUnsafe.user;
+            if (user) {
+                setUserData(user);
+                console.log('User Data:', user);
+            }
         }
     }, [query]);
 
