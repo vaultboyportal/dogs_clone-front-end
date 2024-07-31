@@ -10,8 +10,14 @@ import LeaderboardPage from "./Pages/leaderboard";
 import InviteFriends from "./Pages/inviteFriends";
 import Game from "./doubleJump_Game/game";
 function App() {
-    // Получаем текущий путь из useLocation
     const location = useLocation();
+    const query = useQuery();
+    const startapp = query.get('startapp');
+    
+    if (startapp) {
+        console.log("Startapp parameter:", startapp);
+    }
+    // Получаем текущий путь из useLocation
     // Определяем, нужно ли показывать BottomNavbar
     const showBottomNavbar = location.pathname !== '/' && location.pathname !== '/second' && location.pathname !== '/last_check';
 
