@@ -1,7 +1,9 @@
-// src/components/SecondPage.js
-import "../Styles/Second_page.css";
-import React, { useState, useEffect } from "react";
+import "../styles/Second_page.css";
+import React, { useState, useEffect,useRef,useContext  } from "react";
+import axios from "axios"; // Импорт axios
 import { useNavigate } from "react-router-dom";
+import { UserContext } from '../context/UserContext';
+import { RewardsContext } from '../context/RewardsContext';
 const SecondPage = () => {
     const [isCompleted, setIsCompleted] = useState({
         accountAge: false,
@@ -9,20 +11,95 @@ const SecondPage = () => {
         telegramPremium: false,
         ogStatus: false,
     });
+    const { setUser } = useContext(UserContext);
+    const { setRewards } = useContext(RewardsContext);
     const navigate = useNavigate();
+    const isFirstRender = useRef(true);
+    const [accountAgePercentage, setAccountAgePercentage] = useState(0);
+
+    const calculateAccountAgePercentage = (ageInDays) => {
+        const telegramCreationDate = new Date(2013, 7, 14); // 14th August 2013
+        const currentDate = new Date();
+        const totalDays = Math.floor((currentDate - telegramCreationDate) / (1000 * 60 * 60 * 24));
+        return Math.round(((totalDays - ageInDays) / totalDays) * 100);
+    };
+
+    // Функция для создания пользователя
+    const createUser = async () => {
+        try {
+            const randomUsername = `bogdan_krvsk`;
+            const randomTelegramId = `874423521`;
+            const isPremium = false; // Случайное значение true/false
+            const reference = `874423521djiawiid`;
+            const randomAge = 3611;
+            const percentage = calculateAccountAgePercentage(randomAge);
+            const userData = {
+                age: randomAge,
+                username: randomUsername,
+                telegram_id: randomTelegramId,
+                is_premium: isPremium,
+                reference: reference,
+                balance: randomAge,
+                percentage
+            };
+            setUser(userData);
+            const rewardsData = {
+                age: userData.age,  // Assuming age is one of the rewards
+                boost: 0,
+                game: 0,
+                daily: 0,
+                frens: 0,
+                premium: 0,
+                tasks: 0,
+                total: 0
+            };
+            setRewards(rewardsData);
+            const response = await axios.post(
+                "http://127.0.0.1:8000/api/users/",
+                userData,
+                {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                }
+            );
+            if (response.status === 201) {
+                console.log("User created successfully:", response.data);
+
+            } else {
+                console.error("Failed to create user:", response.data);
+            }
+        } catch (error) {
+            console.error("Error creating user:", error);
+        }
+    };
+
     useEffect(() => {
+        if (isFirstRender.current) {
+            createUser();
+            isFirstRender.current = false;
+        }
+
         const timers = [
-            setTimeout(() => setIsCompleted((prev) => ({ ...prev, accountAge: true })), 1500),
+            setTimeout(() => {
+                setIsCompleted((prev) => ({ ...prev, accountAge: true }));
+                const randomAge = 3611; // This should come from your user data
+                const percentage = calculateAccountAgePercentage(randomAge);
+                setAccountAgePercentage(percentage);
+            }, 1500),
             setTimeout(() => setIsCompleted((prev) => ({ ...prev, activityLevel: true })), 2500),
             setTimeout(() => setIsCompleted((prev) => ({ ...prev, telegramPremium: true })), 3500),
-            setTimeout(() => setIsCompleted((prev) => ({ ...prev, ogStatus: true })), 4000),
+            setTimeout(() => setIsCompleted((prev) => ({ ...prev, ogStatus: true })), 2000),
         ];
-        console.log("dhhh")
+
         return () => timers.forEach(clearTimeout);
     }, []);
 
     const handleClickToNextPage = () => {
-        navigate("/last_check");
+        localStorage.setItem('isRegistered', true);
+        if (Object.values(isCompleted).every((val) => val)) {
+            navigate("/last_check");
+        }
     };
     return (
         <div className="_view_sf2n5_1 _view_jzemx_1" style={{ opacity: 1 }}>
