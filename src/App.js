@@ -9,6 +9,11 @@ import BottomNavbar from "./Pages/bottomNavbar";
 import LeaderboardPage from "./Pages/leaderboard";
 import InviteFriends from "./Pages/inviteFriends";
 import Game from "./doubleJump_Game/game";
+
+function useQuery() {
+    return new URLSearchParams(useLocation().search);
+}
+
 function App() {
     const location = useLocation();
     const query = useQuery();
@@ -17,8 +22,6 @@ function App() {
     if (startapp) {
         console.log("Startapp parameter:", startapp);
     }
-    // Получаем текущий путь из useLocation
-    // Определяем, нужно ли показывать BottomNavbar
     const showBottomNavbar = location.pathname !== '/' && location.pathname !== '/second' && location.pathname !== '/last_check';
 
     return (
