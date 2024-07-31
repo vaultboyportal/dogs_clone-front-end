@@ -1,12 +1,13 @@
 // src/components/LastPage.js
-import React, { useState } from "react";
+import React, { useState,useContext } from "react";
 import "../Styles/Last_page.css"; // Додайте CSS для стилізації
 import { useNavigate } from "react-router-dom";
-
+import { UserContext } from '../context/UserContext';
 const LastPage = () => {
+    const { user } = useContext(UserContext);
     const [state, setState] = useState("initial"); // Текущее состояние страницы
     const navigate = useNavigate();
-
+    console.log(user?.age)
     const handleContinue = () => {
         if (state === "initial") {
             // Переключаем состояние, чтобы обновить страницу
@@ -36,11 +37,11 @@ const LastPage = () => {
                             <div className="_title_mgd6s_24">Elite member!</div>
                             <div className="_subTitle_mgd6s_34">You've joined Telegram</div>
                             <div className="_valueWrap_mgd6s_42">
-                                <div className="_value_mgd6s_42">5</div>
+                                <div className="_value_mgd6s_42">{Math.round(user ? user.age / 365 : "...")}</div>
                                 <div className="_valueTitle_mgd6s_78">years ago</div>
                             </div>
                             <div className="_valueSubTitle_mgd6s_86">
-                                Your account number is #874423521.<br /> You're in the Top 15% Telegram users 🔥
+                                Your account number is #{user?.telegram_id}.<br />  You're in the Top {user ? Math.round(user.percentage) : "..."}% Telegram users 🔥
                             </div>
                         </>
                     ) : (
@@ -53,10 +54,10 @@ const LastPage = () => {
                                            width="237" height="242" viewBox="0 0 237 242" fill="none">
                                     </img>
                                 </div>
-                                <div className="_valueTitle_mgd6s_78">5,973</div>
+                                <div className="_valueTitle_mgd6s_78">{user?.age}</div>
                             </div>
                             <div className="_valueSubTitle_mgd6s_86">
-                                Thanks for your time on Telegram 🤝
+                                Welcome to the OnlyUp movement 🤝
                             </div>
                         </>
                     )}

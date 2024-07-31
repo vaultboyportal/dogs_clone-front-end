@@ -1,4 +1,4 @@
-import "../styles/Second_page.css";
+import "../Styles/Second_page.css";
 import React, { useState, useEffect,useRef,useContext  } from "react";
 import axios from "axios"; // Импорт axios
 import { useNavigate } from "react-router-dom";
@@ -102,10 +102,10 @@ const SecondPage = () => {
         }
     };
     return (
-        <div className="_view_sf2n5_1 _view_jzemx_1" style={{ opacity: 1 }}>
+        <div className="_view_sf2n5_1 _view_jzemx_1" style={{opacity: 1}}>
             <div className="_title_jzemx_9">Checking your account</div>
             <div className="_loaders_jzemx_15">
-                <div style={{ opacity: 1, transform: "none" }}>
+                <div style={{opacity: 1, transform: "none"}}>
                     <div>
                         <div className="_top_jzemx_39">
                             <div className="_name_jzemx_33">Account Age Verified</div>
@@ -138,7 +138,7 @@ const SecondPage = () => {
                         </div>
                     </div>
                 </div>
-                <div style={{ opacity: 1, transform: "none" }}>
+                <div style={{opacity: 1, transform: "none"}}>
                     <div>
                         <div className="_top_jzemx_39">
                             <div className="_name_jzemx_33">Activity Level Analyzed</div>
@@ -171,7 +171,7 @@ const SecondPage = () => {
                         </div>
                     </div>
                 </div>
-                <div style={{ opacity: 1, transform: "none" }}>
+                <div style={{opacity: 1, transform: "none"}}>
                     <div>
                         <div className="_top_jzemx_39">
                             <div className="_name_jzemx_33">Telegram Premium Checked</div>
@@ -204,10 +204,10 @@ const SecondPage = () => {
                         </div>
                     </div>
                 </div>
-                <div style={{ opacity: 1, transform: "none" }}>
+                <div style={{opacity: 1, transform: "none"}}>
                     <div>
                         <div className="_top_jzemx_39">
-                            <div className="_name_jzemx_33">OG Status Confirmed</div>
+                            <div className="_name_jzemx_33">OG Status Confirmed *</div>
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 width="24"
@@ -245,6 +245,7 @@ const SecondPage = () => {
             >
                 Continue
             </div>
+            <div className="_name_jzemx_33 _title_elpw_3">*time since you joined Doc Profit VIP</div>
         </div>
     );
 };

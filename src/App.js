@@ -14,6 +14,11 @@ import { TasksProvider } from './context/TasksContext';
 import { RewardsProvider } from './context/RewardsContext';
 import {LeaderboardProvider} from "./context/LeaderboardContext";
 
+
+function useQuery() {
+    return new URLSearchParams(useLocation().search);
+}
+
 function App() {
     const location = useLocation();
     const query = useQuery();
