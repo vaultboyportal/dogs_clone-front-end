@@ -17,10 +17,13 @@ function useQuery() {
 function App() {
     const location = useLocation();
     const query = useQuery();
+    const [startParam, setStartParam] = useState('');
+
     useEffect(() => {
         const startParamValue = query.get('tgWebAppStartParam');
         if (startParamValue) {
-            console.log('ParamsID:', refererId);
+            setStartParam(startParamValue);
+            console.log('ParamsID:', startParamValue);
         }
     }, [query]);
 
