@@ -1,5 +1,5 @@
 import React from "react";
-import "../styles/mainStyles.css";
+import "../Styles/mainStyles.css";
 
 const PreLoad = () => {
     return(

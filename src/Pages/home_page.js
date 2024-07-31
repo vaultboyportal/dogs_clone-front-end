@@ -1,13 +1,21 @@
 // src/components/LastPage.js
-import React, { useState } from "react";
+import React, { useState,useContext } from "react";
 import "../Styles/mainStyles.css"; // Додайте CSS для стилізації
 import { useNavigate } from "react-router-dom";
-
+import { UserContext } from '../context/UserContext';
+import CommunitySlide from './componentsTemplates/CommunitySlide';
+import TaskItem from './componentsTemplates/TaskItem';
+import RewardItem from './componentsTemplates/RewardItem';
+import { RewardsContext } from '../context/RewardsContext';
 const HomePage = () => {
     const navigate = useNavigate();
     const handleGoToScore = () => {
         navigate("/last_check");
     };
+    const { user } = useContext(UserContext);
+    const { rewards } = useContext(RewardsContext);
+    const balance = user.balance;
+    console.log(rewards.age)
     return (
         <div class="_page_1ulsb_1">
             <div className="_gameView_1cr97_1" id="game-view">
@@ -33,7 +41,7 @@ const HomePage = () => {
                         </img>
                     </div>
                     <div className="_title_1vo1r_5">
-                        <div className="_balance_eubs4_1"><span>5,973</span><span
+                        <div className="_balance_eubs4_1"><span>{balance}</span><span
                             className="_symbol_eubs4_9">$UP</span></div>
                     </div>
                     <div className="_root_oar9p_1 _type-white_oar9p_43">Connect wallet</div>
@@ -42,11 +50,11 @@ const HomePage = () => {
                             <div className="swiper-wrapper">
                                 <div className="swiper-slide swiper-slide-active" style={{width: "100%"}}>
                                     <div className="_itemWrap_1xku1_16 _itemWrapFirst_1xku1_20">
-                                        <div className="_item_1xku1_6">
-                                            <div className="_title_1xku1_28">OnlyUp COMMUNITY</div>
-                                            <div className="_text_1xku1_34">Home for Telegram OGs</div>
-                                            <div className="_button_1xku1_41">Join</div>
-                                        </div>
+                                        <CommunitySlide
+                                            title="OnlyUp Community"
+                                            text="3.2k"
+                                            buttonText="Join"
+                                        />
                                     </div>
                                 </div>
                             </div>
@@ -59,42 +67,53 @@ const HomePage = () => {
                     <div className="_taskList_dti3z_1">
                         <div className="_title_dti3z_5">Tasks</div>
                         <div>
-                            <div className="_listItem_1wi4k_1">
-                                <div className="_media_1wi4k_8">
-                                    <svg xmlns="http://www.w3.org/2000/svg"
-                                         width="800"
-                                         height="700"
-                                         viewBox="-60 40 590 450">
-                                        <path fill="#ffffff"
-                                              d="M144 64c0-8.8 7.2-16 16-16s16 7.2 16 16c0 9.1 5.1 17.4 13.3 21.5s17.9 3.2 25.1-2.3c2.7-2 6-3.2 9.6-3.2c8.8 0 16 7.2 16 16c0 9.1 5.1 17.4 13.3 21.5s17.9 3.2 25.1-2.3c2.7-2 6-3.2 9.6-3.2c8.8 0 16 7.2 16 16c0 9.1 5.1 17.4 13.3 21.5s17.9 3.2 25.1-2.3c2.7-2 6-3.2 9.6-3.2c8.8 0 16 7.2 16 16l0 104c0 31.3-20 58-48 67.9c-9.6 3.4-16 12.5-16 22.6L304 488c0 13.3 10.7 24 24 24s24-10.7 24-24l0-117.8c38-20.1 64-60.1 64-106.2l0-104c0-35.3-28.7-64-64-64c-2.8 0-5.6 .2-8.3 .5C332.8 77.1 311.9 64 288 64c-2.8 0-5.6 .2-8.3 .5C268.8 45.1 247.9 32 224 32c-2.8 0-5.6 .2-8.3 .5C204.8 13.1 183.9 0 160 0C124.7 0 96 28.7 96 64l0 64.3c-11.7 7.4-22.5 16.4-32 26.9l17.8 16.1L64 155.2l-9.4 10.5C40 181.8 32 202.8 32 224.6l0 12.8c0 49.6 24.2 96.1 64.8 124.5l13.8-19.7L96.8 361.9l8.9 6.2c6.9 4.8 14.4 8.6 22.3 11.3L128 488c0 13.3 10.7 24 24 24s24-10.7 24-24l0-128.1c0-12.6-9.8-23.1-22.4-23.9c-7.3-.5-14.3-2.9-20.3-7.1l-13.1 18.7 13.1-18.7-8.9-6.2C96.6 303.1 80 271.3 80 237.4l0-12.8c0-9.9 3.7-19.4 10.3-26.8l9.4-10.5c3.8-4.2 7.9-8.1 12.3-11.6l0 32.3c0 8.8 7.2 16 16 16s16-7.2 16-16l0-65.7 0-14.3 0-64z"/>
-                                    </svg>
-                                </div>
-                                <div className="_body_1wi4k_22">
-                                    <div className="_title_1wi4k_29">Send 🦴 to Bybit X.com</div>
-                                    <div className="_footer_1wi4k_38">+100 DOGS</div>
-                                </div>
-                                <div className="_after_1wi4k_45">
-                                    <div className="_root_oar9p_1 _type-dark_oar9p_58 _size-s_oar9p_31">Start</div>
-                                </div>
-                            </div>
+                            <TaskItem
+                                title="Follow OnlyUP on X"
+                                footerText="+1000"
+                                url="https://t.me/video_save_kyuubi"
+                            />
+                            <TaskItem
+                                title="Join our telegram chat"
+                                footerText="+1000"
+                                url="https://t.me/video_save_kyuubi"
+                            />
                         </div>
                         <div className="_rewardList_1a8v0_1">
                             <div className="_title_1a8v0_5">Your rewards</div>
-                            <div className="_item_n07eh_1">
-                                <div className="_media_n07eh_8">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                                         fill="none">
-                                        <path d="M6 12L10.2426 16.2426L18.727 7.75732" stroke="white" stroke-width="2"
-                                              stroke-linecap="round" stroke-linejoin="round"></path>
-                                    </svg>
-                                </div>
-                                <div className="_body_n07eh_28">
-                                    <div className="_text_n07eh_42">Daily Check-in</div>
-                                </div>
-                            <div className="_details_n07eh_51">+400 DOGS</div>
-                          </div>
+                            <RewardItem
+                                text="Account age"
+                                details={rewards.age.toString()}
+                            />
+                            <RewardItem
+                                text="Boosts reward"
+                                details={rewards.boost}
+                            />
+                            <RewardItem
+                                text="Game reward"
+                                details={rewards.game}
+                            />
+                            <RewardItem
+                                text="Daily reward"
+                                details={rewards.daily}
+                            />
+                            <RewardItem
+                                text="Friends reward"
+                                details={rewards.frens}
+                            />
+                            <RewardItem
+                                text="Telegram Premium"
+                                details={rewards.premium}
+                            />
+                            <RewardItem
+                                text="Tasks reward"
+                                details={rewards.tasks}
+                            />
+                            <RewardItem
+                                text="Total reward"
+                                details={rewards.total}
+                            />
 
-                    </div>
+                        </div>
                         <a className="_policyLink_1vo1r_85"
                            href="https://cdn.onetime.dog/public/The%20Dogs%20PRIVACY%20POLICY.docx" target="_blank">Privacy
                             policy</a></div>

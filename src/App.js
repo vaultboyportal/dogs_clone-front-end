@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route, useLocation, Navigate } from "react-router-dom";
-import React,{useState,useEffect} from "react";
+import React,{useState,useEffect,createContext,useContext  } from "react";
 import WelcomePage from "./pages/First_page";
 import SecondPage from "./pages/Second_page";
 import LastPage from "./pages/Last_page";
@@ -24,6 +24,8 @@ function App() {
     const query = useQuery();
     const [startParam, setStartParam] = useState('');
     const [userData, setUserData] = useState(null);
+    const { isRegistered } = useContext(IsRegisteredContext); // Add this line
+    const showBottomNavbar = location.pathname !== '/' && location.pathname !== '/second' && location.pathname !== '/last_check' && location.pathname !== '/preload';
 
     useEffect(() => {
         const startParamValue = query.get('tgWebAppStartParam');
@@ -41,13 +43,10 @@ function App() {
         }
     }, [query]);
 
-    const showBottomNavbar = location.pathname !== '/' && location.pathname !== '/second' && location.pathname !== '/last_check';
-
-
     return (
         <div className="App">
             <Routes>
-                <Route path="/" element={<WelcomePage />} />
+                <Route path="/" element={isRegistered ? <Navigate to="/preload" /> : <WelcomePage />} />
                 <Route path="/second" element={<SecondPage />} />
                 <Route path="/last_check" element={<LastPage />} />
                 <Route path="/preload" element={<PreLoad />} />
@@ -64,7 +63,7 @@ function App() {
         </div>
     );
 }
-
+export const IsRegisteredContext = createContext();
 function AppWrapper() {
     const [isRegistered, setIsRegistered] = useState(false);
 
@@ -75,6 +74,7 @@ function AppWrapper() {
 
     const telegramId = '874423521';
     return (
+        <IsRegisteredContext.Provider value={{ isRegistered, setIsRegistered }}>
         <UserProvider telegramId={telegramId}>
             <LeaderboardProvider telegramId={telegramId}>
             <TasksProvider>
@@ -86,6 +86,7 @@ function AppWrapper() {
             </TasksProvider>
                 </LeaderboardProvider>
         </UserProvider>
+        </IsRegisteredContext.Provider>
     );
 }
 
