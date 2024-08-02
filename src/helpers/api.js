@@ -8,7 +8,6 @@ export const API_BASE_URL = 'http://127.0.0.1:8000/api';
 export const telegram_id = "874423521"
 export const updateUserBalance = async (telegramId, newBalance) => {
     try {
-
         const response = await axios.post(`${API_BASE_URL}/update_balance/`, {
             telegram_id: telegramId,
             balance: newBalance

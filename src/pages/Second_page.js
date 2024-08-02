@@ -94,7 +94,6 @@ const SecondPage = (userData) => {
                 );
                 if (response.status === 201) {
                     console.log("User created successfully:", response.data);
-                  setIsCompleted((prev) => ({ ...prev, activityLevel: true }))
                 } else {
                     console.error("Failed to create user:", response.data);
                 }
@@ -127,8 +126,10 @@ const SecondPage = (userData) => {
     useEffect(() => {
         if (isFirstRender.current) {
             createUser();
+            setTimeout(1000)
             fetchLeaderboard(userData?.userData.id);
             isFirstRender.current = false;
+            setIsCompleted((prev) => ({ ...prev, activityLevel: true }))
         }
 
         const timers = [
@@ -146,7 +147,6 @@ const SecondPage = (userData) => {
     }, []);
 
     const handleClickToNextPage = () => {
-        localStorage.setItem('isRegistered', true);
         if (Object.values(isCompleted).every((val) => val)) {
             navigate("/last_check");
         }

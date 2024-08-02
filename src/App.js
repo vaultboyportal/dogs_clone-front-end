@@ -65,15 +65,15 @@ function App() {
         <div className="App">
 
             <Routes>
-                <Route path="/" element={isRegistered ? <Navigate to="/preload" /> : <WelcomePage />} />
+                <Route path="/preload" element={<PreLoad telegramId={userData.id} />} />
+                <Route path="/welcome" element={<WelcomePage />} />
                 <Route path="/second" element={<SecondPage userData={userData} />} />
                 <Route path="/last_check" element={<LastPage />} />
-                <Route path="/preload" element={<PreLoad telegramId={userData.id} />} />
                 <Route path="/home" element={<HomePage />} />
                 <Route path="/leaderboard" element={<LeaderboardPage />} />
                 <Route path="/invite" element={<InviteFriends />} />
                 <Route path="/game" element={<Game telegram_Id={userData.id}/>} />
-                <Route path="*" element={<Navigate to={localStorage.getItem('isRegistered') === 'true' ? "/home" : "/"} />} />
+                <Route path="*" element={<Navigate to="/preload" />} />
             </Routes>
             {showBottomNavbar && <BottomNavbar />}
             <Modal show={showModal} onClose={() => setShowModal(false)} message={modalMessage} />
@@ -87,10 +87,6 @@ function AppWrapper() {
     const [modalMessage, setModalMessage] = useState('');
     const [showModal, setShowModal] = useState(false);
 
-    useEffect(() => {
-        const userRegistered = localStorage.getItem('isRegistered') === 'true';
-        setIsRegistered(userRegistered);
-    }, []);
 
     return (
         <IsRegisteredContext.Provider value={{ isRegistered, setIsRegistered }}>

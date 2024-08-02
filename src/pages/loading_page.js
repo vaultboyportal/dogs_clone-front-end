@@ -30,8 +30,6 @@ const PreLoad = ({ telegramId }) => {
                 if (rewardResult) {
                     setRewardData(rewardResult);
                     setShowRewardPage(true); // Show reward page if a new reward is claimed
-                } else {
-                    navigate("/home"); // Navigate to home if no reward
                 }
             } catch (error) {
                 console.error("Error loading data", error);
@@ -58,19 +56,23 @@ const PreLoad = ({ telegramId }) => {
             console.error("Error fetching leaderboard data:", error);
         }
     };
-
     const fetchUser = async (telegramId) => {
         try {
             const response = await axios.post(`${API_BASE_URL}/users/join/`, {
                 user_id: telegramId
             });
+
             if (response.status === 200 && response.data.status === "success") {
                 setUser(response.data.user);
             } else {
                 console.error("Error fetching user:", response.data.message);
             }
         } catch (error) {
-            console.error("Failed to fetch user:", error);
+            if (error.response && error.response.status === 404) {
+                navigate("/welcome"); // Navigate to WelcomePage if user is not found
+            } else {
+                console.error("Failed to fetch user:", error);
+            }
         }
     };
 
@@ -90,6 +92,7 @@ const PreLoad = ({ telegramId }) => {
             const response = await axios.get(`${API_BASE_URL}/users/${telegramId}/tasks/`);
             if (response.status === 200 && response.data.status === "success") {
                 setTasks(response.data.tasks);
+                navigate("/home");
             } else {
                 console.error('Error fetching tasks:', response.data.message);
             }
