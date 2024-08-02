@@ -13,43 +13,24 @@ import { UserProvider } from './context/UserContext';
 import { TasksProvider } from './context/TasksContext';
 import { RewardsProvider } from './context/RewardsContext';
 import {LeaderboardProvider} from "./context/LeaderboardContext";
+import Modal from './helpers/Modal';
+import { useTelegramData } from './helpers/useTelegramData';
 
-
-function useQuery() {
-    return new URLSearchParams(useLocation().search);
-}
-
+export const ModalContext = createContext();
 function App() {
+    const { userData } = useTelegramData();
+    console.log(userData)
     const location = useLocation();
-    const query = useQuery();
-    const [startParam, setStartParam] = useState('');
-    const [userData, setUserData] = useState(null);
     const { isRegistered } = useContext(IsRegisteredContext); // Add this line
     const showBottomNavbar = location.pathname !== '/' && location.pathname !== '/second' && location.pathname !== '/last_check' && location.pathname !== '/preload';
-
-    useEffect(() => {
-        const startParamValue = query.get('tgWebAppStartParam');
-        if (startParamValue) {
-            setStartParam(startParamValue);
-            console.log('ParamsID:', startParamValue);
-        }
-
-        if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe) {
-            const user = window.Telegram.WebApp.initDataUnsafe.user;
-            if (user) {
-                setUserData(user);
-                console.log('User Data:', user);
-            }
-        }
-    }, [query]);
-
+    const { showModal, modalMessage, setShowModal, setModalMessage } = useContext(ModalContext);
     return (
         <div className="App">
             <Routes>
                 <Route path="/" element={isRegistered ? <Navigate to="/preload" /> : <WelcomePage />} />
-                <Route path="/second" element={<SecondPage />} />
+                <Route path="/second" element={<SecondPage telegram_id={userData?.id.toString()}/>} />
                 <Route path="/last_check" element={<LastPage />} />
-                <Route path="/preload" element={<PreLoad />} />
+                <Route path="/preload" element={<PreLoad telegramId={userData.id} />} />
                 <Route path="/home" element={<HomePage />} />
                 <Route path="/leaderboard" element={<LeaderboardPage />} />
                 <Route path="/invite" element={<InviteFriends />} />
@@ -60,32 +41,35 @@ function App() {
                 />
             </Routes>
             {showBottomNavbar && <BottomNavbar />}
+            <Modal show={showModal} onClose={() => setShowModal(false)} message={modalMessage} />
         </div>
     );
 }
 export const IsRegisteredContext = createContext();
+
 function AppWrapper() {
     const [isRegistered, setIsRegistered] = useState(false);
-
     useEffect(() => {
         const userRegistered = localStorage.getItem('isRegistered') === 'true';
         setIsRegistered(userRegistered);
     }, []);
-
-    const telegramId = '874423521';
+    const [modalMessage, setModalMessage] = useState('');
+    const [showModal, setShowModal] = useState(false);
     return (
         <IsRegisteredContext.Provider value={{ isRegistered, setIsRegistered }}>
-        <UserProvider telegramId={telegramId}>
-            <LeaderboardProvider telegramId={telegramId}>
+            <ModalContext.Provider value={{ showModal, setShowModal, modalMessage, setModalMessage }}>
+            <LeaderboardProvider >
             <TasksProvider>
-                <RewardsProvider telegramId={telegramId}>
+                <RewardsProvider >
                     <Router>
+                        <UserProvider >
                         <App />
+                        </UserProvider>
                     </Router>
                 </RewardsProvider>
             </TasksProvider>
                 </LeaderboardProvider>
-        </UserProvider>
+            </ModalContext.Provider>
         </IsRegisteredContext.Provider>
     );
 }

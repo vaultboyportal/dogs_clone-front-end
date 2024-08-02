@@ -7,7 +7,6 @@ const LastPage = () => {
     const { user } = useContext(UserContext);
     const [state, setState] = useState("initial"); // Текущее состояние страницы
     const navigate = useNavigate();
-    console.log(user?.age)
     const handleContinue = () => {
         if (state === "initial") {
             // Переключаем состояние, чтобы обновить страницу
@@ -37,11 +36,11 @@ const LastPage = () => {
                             <div className="_title_mgd6s_24">Elite member!</div>
                             <div className="_subTitle_mgd6s_34">You've joined Telegram</div>
                             <div className="_valueWrap_mgd6s_42">
-                                <div className="_value_mgd6s_42">{Math.round(user ? user.age / 365 : "...")}</div>
+                                <div className="_value_mgd6s_42">{Math.round(user ? user.top_group: "...")}</div>
                                 <div className="_valueTitle_mgd6s_78">years ago</div>
                             </div>
                             <div className="_valueSubTitle_mgd6s_86">
-                                Your account number is #{user?.telegram_id}.<br />  You're in the Top {user ? Math.round(user.percentage) : "..."}% Telegram users 🔥
+                                Your account number is #{user?.telegram_id}.<br />  You're in the Top {user ? Math.round(user.top_percent) : "..."}% Telegram users 🔥
                             </div>
                         </>
                     ) : (

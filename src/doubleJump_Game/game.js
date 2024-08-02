@@ -1,6 +1,8 @@
-import { useState, useEffect, useCallback } from 'react';
+import {useState, useEffect, useCallback, useContext} from 'react';
 import './game.css';
-
+import {UserContext} from "../context/UserContext";
+import axios from 'axios';
+import {API_BASE_URL} from '../helpers/api';
 function Platforms({ platforms }) {
     return platforms.map((platform, index) => (
         <div
@@ -24,7 +26,8 @@ function Doodler({ doodler }) {
     );
 }
 
-function Game() {
+function Game({telegram_Id}) {
+    const { user, setUser,updateUserBalance  } = useContext(UserContext);
     const [isGameOver, setIsGameOver] = useState(true);
     const [platforms, setPlatforms] = useState([]);
     const [doodler, setDoodler] = useState({});
@@ -167,6 +170,7 @@ function Game() {
         const touchX = event.touches[0].clientX;
         const halfScreenWidth = window.innerWidth / 2;
         if (isGameOver) {
+            fetchUserAttempts(telegram_Id)
             start();
         }
         if (touchX < halfScreenWidth) {
@@ -182,6 +186,7 @@ function Game() {
 
     const handleKeyDown = useCallback((event) => {
         if (event.key === 'Enter' && isGameOver) {
+            fetchUserAttempts(telegram_Id)
             start();
         } else if (event.key === 'ArrowLeft') {
             setDirection('left');
@@ -192,6 +197,22 @@ function Game() {
         }
     }, [isGameOver, start]);
 
+    const fetchUserAttempts = async (telegram_Id) => {
+        try {
+            const response = await axios.post(`${API_BASE_URL}/users/update_attempts/`,
+                { telegram_id: telegram_Id, action: 'use' });
+            if (response.status === 200) {
+                // Handle success
+                setUser((prevUser) => ({
+                    ...prevUser,  // Preserve existing user data
+                    attempts_left: response.data.attempts_left  // Update attempts_left field
+                }));
+                console.log(response.data.attempts_left);
+            }
+        } catch (error) {
+            console.error("Error fetching or using user attempts:", error);
+        }
+    };
     return (
         <div className="grid" onKeyDown={handleKeyDown} onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd} >
             {!isGameOver ? (
@@ -202,9 +223,11 @@ function Game() {
                 </>
             ) : (
                 <div className="instructions">
-                    DoodleJump <br />
-                    Press Enter or tap the screen to start. <br />
-                    Use arrow keys or swipe to navigate. Don't hit the floor!
+                    DoodleJump <br/>
+                    Press Enter or tap the screen to start. <br/>
+                    Use arrow keys or swipe to navigate. Don't hit the floor! <br/>
+                    Your balance: {user.balance} <br/>
+                    Your charges: {user.attempts_left}
                 </div>
             )}
         </div>

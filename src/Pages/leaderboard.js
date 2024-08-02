@@ -3,14 +3,9 @@ import React, {useContext, useState} from "react";
 import "../Styles/mainStyles.css"; // Додайте CSS для стилізації
 import UserBoard from "./componentsTemplates/UserBoard";
 import Leaderboard from "./componentsTemplates/Leaderboard";
-import { useNavigate } from "react-router-dom";
 import {LeaderboardContext} from "../context/LeaderboardContext";
 
 const LeaderboardPage = () => {
-    const navigate = useNavigate();
-    const handleGoToScore = () => {
-        navigate("/last_check");
-    };
     const { count } = useContext(LeaderboardContext);
     return (
         <div class="_page_1ulsb_1">

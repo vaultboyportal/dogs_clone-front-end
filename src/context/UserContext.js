@@ -1,36 +1,44 @@
 // UserContext.js
 import React, { createContext, useState, useEffect } from 'react';
 import axios from 'axios';
-
+import {API_BASE_URL} from '../helpers/api';
+import {useTelegramData} from "../helpers/useTelegramData";
 // Create a context for user
 export const UserContext = createContext();
 
-export const UserProvider = ({ children, telegramId }) => {
+export const UserProvider = ({ children }) => {
+    const { userData } = useTelegramData();
     // Initialize state for user with default values
     const [user, setUser] = useState({
-        username: '',
-        balance: 0.0,
-        // Add other default properties as necessary
     });
-    // Fetch user data from the API when the component mounts
-    useEffect(() => {
-        const fetchUser = async () => {
-            try {
-                const response = await axios.get(`http://127.0.0.1:8000/api/users/${telegramId}`);
-                setUser(response.data.user);
-            } catch (error) {
-                console.error('Failed to fetch user:', error);
+    const updateUserBalance = async (newBalance) => {
+        try {
+            const response = await axios.post(`${API_BASE_URL}/users/update_balance/`, {
+                telegram_id: userData?.id.toString(),
+                balance: newBalance,
+            }, {
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            });
+
+            if (response.status === 200) {
+                console.log("Balance updated successfully on server:", response.data.user);
+                // Update the local context state
+                setUser((prevUser) => ({
+                    ...prevUser,
+                    balance: newBalance,
+                }));
+            } else {
+                console.error("Failed to update balance on server:", response.data.message);
             }
-        };
-
-        if (telegramId) {
-            fetchUser();
+        } catch (error) {
+            console.error("Error updating balance on server:", error);
         }
-    }, [telegramId]);
-
+    };
     // Provide the user data and a setter function
     return (
-        <UserContext.Provider value={{ user, setUser }}>
+        <UserContext.Provider value={{ user, setUser, updateUserBalance  }}>
             {children}
         </UserContext.Provider>
     );

@@ -4,7 +4,7 @@ import { LeaderboardContext } from '../../context/LeaderboardContext';
 
 const Leaderboard = () => {
     const { leaderboard } = useContext(LeaderboardContext);
-
+    console.log(leaderboard);
     return (
         <>
             {leaderboard.map((user, index) => (

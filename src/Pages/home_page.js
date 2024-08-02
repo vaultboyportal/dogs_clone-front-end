@@ -1,21 +1,34 @@
-// src/components/LastPage.js
-import React, { useState,useContext } from "react";
-import "../Styles/mainStyles.css"; // Додайте CSS для стилізації
+import React, { useContext, useEffect,useState } from "react";
+import "../Styles/mainStyles.css";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from '../context/UserContext';
+import { RewardsContext } from '../context/RewardsContext';
 import CommunitySlide from './componentsTemplates/CommunitySlide';
 import TaskItem from './componentsTemplates/TaskItem';
 import RewardItem from './componentsTemplates/RewardItem';
-import { RewardsContext } from '../context/RewardsContext';
+import {TasksContext} from "../context/TasksContext";
 const HomePage = () => {
     const navigate = useNavigate();
+    const { user } = useContext(UserContext);
+    const { rewards } = useContext(RewardsContext);
+    const {tasks} = useContext(TasksContext);
     const handleGoToScore = () => {
         navigate("/last_check");
     };
-    const { user } = useContext(UserContext);
-    const { rewards } = useContext(RewardsContext);
-    const balance = user.balance;
-    console.log(rewards.age)
+    const [animated, setAnimated] = useState(false);
+
+    useEffect(() => {
+        if (animated) {
+            setAnimated(true)
+            const timer = setTimeout(() => setAnimated(false), 2000);
+            return () => clearTimeout(timer);
+        }
+    }, [user.balance]);
+
+    const imageSrc = animated
+        ? `${process.env.PUBLIC_URL}/resources_directory/Frame7.webp`
+        : `${process.env.PUBLIC_URL}/resources_directory/13A8E8C5-B501-4EA6-B4AC-6BD22BD7A9BA.webp`;
+
     return (
         <div class="_page_1ulsb_1">
             <div className="_gameView_1cr97_1" id="game-view">
@@ -36,13 +49,16 @@ const HomePage = () => {
                                 d="M1883.31 89.9479C1883.31 53.1478 1853.48 23.3154 1816.68 23.3154H1201.73C1162.44 23.3154 1127.14 40.388 1102.85 67.4479H824.909C809.553 41.0733 780.975 23.3154 748.209 23.3154H320.821C156.058 23.3154 22.4922 156.881 22.4922 321.644V509.207C22.4922 588.661 86.9024 653.071 166.357 653.071H483.414C678.643 653.071 836.908 494.807 836.908 299.577V200.713H1068.9V354.743C1068.9 519.505 1202.46 653.071 1367.23 653.071H1397.42C1665.77 653.071 1883.31 435.53 1883.31 167.18V89.9479Z"
                                 fill="black" stroke="white" stroke-width="45"></path>
                         </svg>
-                        <img id="home-mascote"  src={`${process.env.PUBLIC_URL}/resources_directory/13A8E8C5-B501-4EA6-B4AC-6BD22BD7A9BA.webp`}
+                        <img id="home-mascote"
+                             src={imageSrc}
                              className="_doggy_94k9d_6 _width-82_94k9d_23 _mascote_1vo1r_60 _isRendered_1vo1r_63">
                         </img>
                     </div>
                     <div className="_title_1vo1r_5">
-                        <div className="_balance_eubs4_1"><span>{balance}</span><span
-                            className="_symbol_eubs4_9">$UP</span></div>
+                        <div className={`_balance_eubs4_1 ${animated ? 'balance-animated' : ''}`}>
+                            <span>{user.balance}</span>
+                            <span className="_symbol_eubs4_9">$UP</span>
+                        </div>
                     </div>
                     <div className="_root_oar9p_1 _type-white_oar9p_43">Connect wallet</div>
                     <div className="_socialCarousel_1xku1_1">
@@ -54,6 +70,7 @@ const HomePage = () => {
                                             title="OnlyUp Community"
                                             text="3.2k"
                                             buttonText="Join"
+                                            url="https://t.me/OnlyUP_Official_chat"
                                         />
                                     </div>
                                 </div>
@@ -67,57 +84,37 @@ const HomePage = () => {
                     <div className="_taskList_dti3z_1">
                         <div className="_title_dti3z_5">Tasks</div>
                         <div>
-                            <TaskItem
-                                title="Follow OnlyUP on X"
-                                footerText="+1000"
-                                url="https://t.me/video_save_kyuubi"
-                            />
-                            <TaskItem
-                                title="Join our telegram chat"
-                                footerText="+1000"
-                                url="https://t.me/video_save_kyuubi"
-                            />
+                            {tasks.map((task, index) => (
+                                !task.completed && (
+                                    <TaskItem
+                                        key={index}
+                                        index={index}
+                                        title={task.title}
+                                        footerText={task.reward}
+                                        url={task.url}
+                                        setAnimated={animated}
+                                    />
+                                )
+                            ))}
                         </div>
-                        <div className="_rewardList_1a8v0_1">
-                            <div className="_title_1a8v0_5">Your rewards</div>
-                            <RewardItem
-                                text="Account age"
-                                details={rewards.age.toString()}
-                            />
-                            <RewardItem
-                                text="Boosts reward"
-                                details={rewards.boost}
-                            />
-                            <RewardItem
-                                text="Game reward"
-                                details={rewards.game}
-                            />
-                            <RewardItem
-                                text="Daily reward"
-                                details={rewards.daily}
-                            />
-                            <RewardItem
-                                text="Friends reward"
-                                details={rewards.frens}
-                            />
-                            <RewardItem
-                                text="Telegram Premium"
-                                details={rewards.premium}
-                            />
-                            <RewardItem
-                                text="Tasks reward"
-                                details={rewards.tasks}
-                            />
-                            <RewardItem
-                                text="Total reward"
-                                details={rewards.total}
-                            />
-
-                        </div>
-                        <a className="_policyLink_1vo1r_85"
-                           href="https://cdn.onetime.dog/public/The%20Dogs%20PRIVACY%20POLICY.docx" target="_blank">Privacy
-                            policy</a></div>
-                </div>
+                    </div>
+                    <div className="_rewardList_1a8v0_1">
+                        <div className="_title_1a8v0_5">Your rewards</div>
+                        {rewards.age !== 0 && <RewardItem text="Account age" details={rewards.age.toString()}/>}
+                        {rewards.boost !== 0 && <RewardItem text="Boosts reward" details={rewards.boost}/>}
+                        {rewards.game !== 0 && <RewardItem text="Game reward" details={rewards.game}/>}
+                        {rewards.daily !== 0 && <RewardItem text="Daily reward" details={rewards.daily}/>}
+                        {rewards.frens !== 0 && <RewardItem text="Friends reward" details={rewards.frens}/>}
+                        {rewards.premium !== 0 && <RewardItem text="Telegram Premium" details={rewards.premium}/>}
+                        {rewards.tasks !== 0 && <RewardItem text="Tasks reward" details={rewards.tasks}/>}
+                        {rewards.total !== 0 && <RewardItem text="Total reward" details={rewards.total}/>}
+                        {tasks.map((task, index) => (
+                            task.completed && <RewardItem key={index} text={task.title} details={task.reward}/>
+                        ))}
+                    </div>
+                    <a className="_policyLink_1vo1r_85"
+                       >Privacy
+                        policy</a></div>
             </div>
         </div>
     )

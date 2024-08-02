@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "../Styles/mainStyles.css"; // Додайте CSS для стилізації
 import { useNavigate } from "react-router-dom";
-
+import {API_BASE_URL} from '../helpers/api';
 const InvitePage = () => {
     const navigate = useNavigate();
     const handleGoToScore = () => {

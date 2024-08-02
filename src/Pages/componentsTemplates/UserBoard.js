@@ -6,7 +6,8 @@ import {UserContext} from "../../context/UserContext";
 const UserBoard = () => {
     const { userStats } = useContext(LeaderboardContext);
     const { user } = useContext(UserContext);
-
+    console.log(user);
+    console.log(userStats);
     if (!userStats) return null;
 
     return (

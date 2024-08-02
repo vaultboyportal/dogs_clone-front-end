@@ -4,7 +4,11 @@ import axios from "axios"; // Импорт axios
 import { useNavigate } from "react-router-dom";
 import { UserContext } from '../context/UserContext';
 import { RewardsContext } from '../context/RewardsContext';
-const SecondPage = () => {
+import { TasksContext } from '../context/TasksContext';
+import {LeaderboardContext} from "../context/LeaderboardContext";
+import {API_BASE_URL} from "../helpers/api"; // Import TasksContext
+import {useTelegramData} from "../helpers/useTelegramData";
+const SecondPage = (telegram_id) => {
     const [isCompleted, setIsCompleted] = useState({
         accountAge: false,
         activityLevel: false,
@@ -12,11 +16,13 @@ const SecondPage = () => {
         ogStatus: false,
     });
     const { setUser } = useContext(UserContext);
+    const { userData } = useTelegramData();
     const { setRewards } = useContext(RewardsContext);
+    const { tasks, setTasks } = useContext(TasksContext); // Access tasks and setTasks
     const navigate = useNavigate();
     const isFirstRender = useRef(true);
     const [accountAgePercentage, setAccountAgePercentage] = useState(0);
-
+    const { setUserStats, setLeaderboard, setCount } = useContext(LeaderboardContext);
     const calculateAccountAgePercentage = (ageInDays) => {
         const telegramCreationDate = new Date(2013, 7, 14); // 14th August 2013
         const currentDate = new Date();
@@ -27,56 +33,101 @@ const SecondPage = () => {
     // Функция для создания пользователя
     const createUser = async () => {
         try {
-            const randomUsername = `bogdan_krvsk`;
-            const randomTelegramId = `874423521`;
-            const isPremium = false; // Случайное значение true/false
+            const randomUsername = userData?.username;
+            const randomTelegramId = telegram_id;
+            const isPremium = userData?.is_premium; // Random value true/false
             const reference = `874423521djiawiid`;
-            const randomAge = 3611;
-            const percentage = calculateAccountAgePercentage(randomAge);
-            const userData = {
-                age: randomAge,
-                username: randomUsername,
-                telegram_id: randomTelegramId,
-                is_premium: isPremium,
-                reference: reference,
-                balance: randomAge,
-                percentage
-            };
-            setUser(userData);
-            const rewardsData = {
-                age: userData.age,  // Assuming age is one of the rewards
-                boost: 0,
-                game: 0,
-                daily: 0,
-                frens: 0,
-                premium: 0,
-                tasks: 0,
-                total: 0
-            };
-            setRewards(rewardsData);
-            const response = await axios.post(
-                "http://127.0.0.1:8000/api/users/",
-                userData,
-                {
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                }
-            );
-            if (response.status === 201) {
-                console.log("User created successfully:", response.data);
 
+            // Fetch the registration date
+                const registrationResponse = await axios.get(`${API_BASE_URL}/account_date/`,{
+                    params: { telegram_id: randomTelegramId }
+                });
+            if (registrationResponse.status === 200) {
+                const registrationDateStr = registrationResponse.data.account_date.date;
+                const registrationDate = new Date(registrationDateStr);
+                const currentDate = new Date();
+                const diffTime = Math.abs(currentDate - registrationDate);
+                const randomAge = Math.floor(diffTime / (1000 * 60 * 60 * 24)); // Convert milliseconds to days
+                const percentage = calculateAccountAgePercentage(randomAge);
+                const topGroup = randomAge / 365;
+                const userData = {
+                    age: randomAge,
+                    username: randomUsername,
+                    telegram_id: randomTelegramId,
+                    is_premium: isPremium,
+                    reference: reference,
+                    balance: randomAge,
+                    top_group: topGroup,
+                    top_percent: percentage
+                };
+                setUser(userData);
+
+                const rewardsData = {
+                    age: userData.age,
+                    boost: 0,
+                    game: 0,
+                    daily: 0,
+                    frens: 0,
+                    premium: 0,
+                    tasks: 0,
+                    total: 0
+                };
+                setRewards(rewardsData);
+
+                const initialTasks = [
+                    {"title": "Follow OnlyUP on X", "url": "https://twitter.com/OnlyUP1B", "reward": "+1000", "completed": false},
+                    {"title": "Join our telegram chat", "url": "https://t.me/OnlyUP_Official_chat", "reward": "+1000", "completed": false},
+                    {"title": "OnlyUp Community", "url": "https://t.me/OnlyUP_Announcements", "reward": "+1000", "completed": false}
+                ];
+
+                // Update tasks context
+                setTasks(initialTasks);
+
+                const response = await axios.post(
+                    `${API_BASE_URL}/users/`,
+                    userData,
+                    {
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    }
+                );
+                if (response.status === 201) {
+                    console.log("User created successfully:", response.data);
+                  setIsCompleted((prev) => ({ ...prev, activityLevel: true }))
+                } else {
+                    console.error("Failed to create user:", response.data);
+                }
             } else {
-                console.error("Failed to create user:", response.data);
+                console.error("Failed to fetch registration date:", registrationResponse.data);
             }
         } catch (error) {
             console.error("Error creating user:", error);
         }
     };
 
+    const fetchLeaderboard = async (telegramId) => {
+        try {
+            const response = await axios.get(`${API_BASE_URL}/leaderboard/`, {
+                params: { telegram_id: telegramId }
+            });
+            if (response.status === 200) {
+                console.log(response)
+                const leaderboardData = response.data;
+                console.log(leaderboardData)
+                setLeaderboard(leaderboardData.board);
+                setCount(leaderboardData.count);
+                setUserStats(leaderboardData.me);
+            }
+        } catch (error) {
+            console.error("Error fetching leaderboard data:", error);
+        }
+    };
+
     useEffect(() => {
         if (isFirstRender.current) {
             createUser();
+            fetchLeaderboard(telegram_id);
             isFirstRender.current = false;
         }
 
@@ -87,7 +138,6 @@ const SecondPage = () => {
                 const percentage = calculateAccountAgePercentage(randomAge);
                 setAccountAgePercentage(percentage);
             }, 1500),
-            setTimeout(() => setIsCompleted((prev) => ({ ...prev, activityLevel: true })), 2500),
             setTimeout(() => setIsCompleted((prev) => ({ ...prev, telegramPremium: true })), 3500),
             setTimeout(() => setIsCompleted((prev) => ({ ...prev, ogStatus: true })), 2000),
         ];

@@ -1,9 +1,66 @@
-import React from 'react';
+import React, { useState, useContext } from 'react';
+import { TasksContext } from '../../context/TasksContext';
+import '../../Styles/mainStyles.css'; // Підключення стилів для кнопки
+import axios from 'axios';
+import {UserContext} from "../../context/UserContext";
+import { RewardsContext } from "../../context/RewardsContext";
+import { useNavigate } from 'react-router-dom';
+import { ModalContext } from '../../App';
+import {API_BASE_URL} from '../../helpers/api';
+const TaskItem = ({ title, footerText,url,index, setAnimated }) => {
+    const [isChecked, setIsChecked] = useState(false);
+    const { setShowModal, setModalMessage } = useContext(ModalContext);
+    const { completeTask } = useContext(TasksContext);
+    const { user, setUser,updateUserBalance  } = useContext(UserContext);
+    const { rewards, setRewards } = useContext(RewardsContext);
+    const history = useNavigate();
+    const handleShowModal = () => {
+        setModalMessage("Complete Task and try again");
+        setShowModal(true);
+    };
+    handleShowModal()
+    const verifyTask = async (telegramId, taskTitle, reward ) => {
+        try {
+            const rewardValue = parseInt(reward.replace('+', ''), 10);
+            const response = await axios.post(`${API_BASE_URL}/tasks/verify/`, {
+                telegram_id: telegramId,
+                task: taskTitle,
+                reward: rewardValue
+            }, {
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            });
 
-const TaskItem = ({ title, footerText,url }) => {
-    const handleClick = () => {
-        if (url) {
+            if (response.status === 200) {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                const updatedBalance = user.balance + rewardValue;
+                updateUserBalance(updatedBalance);
+                setRewards(prevRewards => ({
+                    ...prevRewards,
+                    tasks: prevRewards.tasks + rewardValue,
+                    total: prevRewards.total + rewardValue
+                }));
+                completeTask(index);
+                setAnimated(true);
+
+            } else {
+                console.error("Failed to verify task:", response.data.message);
+                handleShowModal()
+            }
+        } catch (error) {
+            console.error("Error verifying task:", error);
+            handleShowModal()
+        }
+    };
+
+    const handleButtonClick = () => {
+        if (!isChecked) {
             window.open(url, '_blank');
+            setIsChecked(true);
+        } else {
+            console.log(user.telegram_id)
+            verifyTask(user.telegram_id, title,footerText);
         }
     };
     return (
@@ -18,7 +75,8 @@ const TaskItem = ({ title, footerText,url }) => {
                 <div className="_footer_1wi4k_38">{footerText}</div>
             </div>
             <div className="_after_1wi4k_45">
-                <div className="_root_oar9p_1 _type-dark_oar9p_58 _size-s_oar9p_31" onClick={handleClick}>Start</div>
+                <div className={isChecked ? "_type-white_ip8lu_54 _root_oar9p_1 _size-s_oar9p_31" : "_type-dark_oar9p_58 _root_oar9p_1 _size-s_oar9p_31"}
+                     onClick={handleButtonClick}>  {isChecked ? "Check" : "Start"}</div>
             </div>
         </div>
     );

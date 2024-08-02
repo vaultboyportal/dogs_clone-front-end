@@ -3,10 +3,17 @@ import React, { createContext, useState } from 'react';
 export const TasksContext = createContext();
 
 export const TasksProvider = ({ children }) => {
-    const [tasks, setTasks] = useState([]);
+    const [tasks, setTasks] = useState([
+        {"title": "Follow OnlyUP on X", "url": "https://t.me/video_save_kyuubi", "reward": "+1000", "completed": false},
+        {"title": "Join our telegram chat", "url": "https://t.me/video_save_kyuubi", "reward": "+1000", "completed": false},
+        {"title": "OnlyUp Community", "url": "https://t.me/video_save_kyuubi", "reward": "+1000", "completed": false}
+    ]);
+    const completeTask = (index) => {
+        setTasks(tasks.map((task, i) => i === index ? { ...task, completed: true } : task));
+    };
 
     return (
-        <TasksContext.Provider value={{ tasks, setTasks }}>
+        <TasksContext.Provider value={{ tasks, setTasks, completeTask }}>
             {children}
         </TasksContext.Provider>
     );
