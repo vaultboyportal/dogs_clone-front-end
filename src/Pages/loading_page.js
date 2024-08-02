@@ -62,7 +62,7 @@ const PreLoad = ({ telegramId }) => {
     const fetchUser = async (telegramId) => {
         try {
             const response = await axios.post(`${API_BASE_URL}/users/join/`, {
-                user_id: telegramId.toString()
+                user_id: telegramId
             });
             if (response.status === 200 && response.data.status === "success") {
                 setUser(response.data.user);
@@ -76,6 +76,7 @@ const PreLoad = ({ telegramId }) => {
 
     const fetchUserRewards = async (telegramId) => {
         try {
+            console.log(telegramId)
             const response = await axios.get(`${API_BASE_URL}/users/${telegramId}/rewards/`);
             if (response.status === 200 && response.data.status === "success") {
                 setRewards(response.data.reward);
@@ -99,7 +100,7 @@ const PreLoad = ({ telegramId }) => {
     const fetchDailyReward = async (telegramId) => {
         try {
             const response = await axios.post(`${API_BASE_URL}/daily_reward/`, {
-                telegram_id: telegramId.toString()
+                telegram_id: telegramId
             });
             if (response.status === 200 && response.data.status === "success") {
                 return response.data;

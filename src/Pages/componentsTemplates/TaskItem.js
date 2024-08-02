@@ -1,25 +1,38 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { TasksContext } from '../../context/TasksContext';
 import '../../Styles/mainStyles.css'; // Підключення стилів для кнопки
 import axios from 'axios';
-import {UserContext} from "../../context/UserContext";
+import { UserContext } from "../../context/UserContext";
 import { RewardsContext } from "../../context/RewardsContext";
 import { useNavigate } from 'react-router-dom';
 import { ModalContext } from '../../App';
-import {API_BASE_URL} from '../../helpers/api';
-const TaskItem = ({ title, footerText,url,index, setAnimated }) => {
+import { API_BASE_URL } from '../../helpers/api';
+
+const TaskItem = ({ title, footerText, url, index, setAnimated }) => {
     const [isChecked, setIsChecked] = useState(false);
     const { setShowModal, setModalMessage } = useContext(ModalContext);
     const { completeTask } = useContext(TasksContext);
-    const { user, setUser,updateUserBalance  } = useContext(UserContext);
+    const { user, setUser, updateUserBalance } = useContext(UserContext);
     const { rewards, setRewards } = useContext(RewardsContext);
     const history = useNavigate();
+
+    // Unique key for localStorage
+    const storageKey = `task-${index}-checked`;
+
+    // Retrieve isChecked state from localStorage on component mount
+    useEffect(() => {
+        const storedCheckedState = localStorage.getItem(storageKey);
+        if (storedCheckedState !== null) {
+            setIsChecked(JSON.parse(storedCheckedState));
+        }
+    }, [storageKey]);
+
     const handleShowModal = () => {
         setModalMessage("Complete Task and try again");
         setShowModal(true);
     };
-    handleShowModal()
-    const verifyTask = async (telegramId, taskTitle, reward ) => {
+
+    const verifyTask = async (telegramId, taskTitle, reward) => {
         try {
             const rewardValue = parseInt(reward.replace('+', ''), 10);
             const response = await axios.post(`${API_BASE_URL}/tasks/verify/`, {
@@ -43,14 +56,13 @@ const TaskItem = ({ title, footerText,url,index, setAnimated }) => {
                 }));
                 completeTask(index);
                 setAnimated(true);
-
             } else {
                 console.error("Failed to verify task:", response.data.message);
-                handleShowModal()
+                handleShowModal();
             }
         } catch (error) {
             console.error("Error verifying task:", error);
-            handleShowModal()
+            handleShowModal();
         }
     };
 
@@ -58,11 +70,13 @@ const TaskItem = ({ title, footerText,url,index, setAnimated }) => {
         if (!isChecked) {
             window.open(url, '_blank');
             setIsChecked(true);
+            localStorage.setItem(storageKey, true); // Save state to localStorage
         } else {
-            console.log(user.telegram_id)
-            verifyTask(user.telegram_id, title,footerText);
+            console.log(user.telegram_id);
+            verifyTask(user.telegram_id, title, footerText);
         }
     };
+
     return (
         <div className="_listItem_1wi4k_1">
             <div className="_media_1wi4k_8">
