@@ -2,13 +2,12 @@
 import React, { createContext, useState, useEffect } from 'react';
 import axios from 'axios';
 import {API_BASE_URL} from '../helpers/api';
-import {useTelegramData} from "../helpers/useTelegramData";
 // Create a context for user
 export const UserContext = createContext();
 
-export const UserProvider = ({ children }) => {
-    const { userData } = useTelegramData();
+export const UserProvider = ({ children, userData }) => {
     // Initialize state for user with default values
+    console.log(userData);
     const [user, setUser] = useState({
     });
     const updateUserBalance = async (newBalance) => {

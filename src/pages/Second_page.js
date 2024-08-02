@@ -7,8 +7,7 @@ import { RewardsContext } from '../context/RewardsContext';
 import { TasksContext } from '../context/TasksContext';
 import {LeaderboardContext} from "../context/LeaderboardContext";
 import {API_BASE_URL} from "../helpers/api"; // Import TasksContext
-import {useTelegramData} from "../helpers/useTelegramData";
-const SecondPage = (telegram_id) => {
+const SecondPage = (userData) => {
     const [isCompleted, setIsCompleted] = useState({
         accountAge: false,
         activityLevel: false,
@@ -16,7 +15,6 @@ const SecondPage = (telegram_id) => {
         ogStatus: false,
     });
     const { setUser } = useContext(UserContext);
-    const { userData } = useTelegramData();
     const { setRewards } = useContext(RewardsContext);
     const { tasks, setTasks } = useContext(TasksContext); // Access tasks and setTasks
     const navigate = useNavigate();
@@ -33,9 +31,10 @@ const SecondPage = (telegram_id) => {
     // Функция для создания пользователя
     const createUser = async () => {
         try {
-            const randomUsername = userData?.username;
-            const randomTelegramId = telegram_id;
-            const isPremium = userData?.is_premium; // Random value true/false
+            console.log(userData.userData.id)
+            const randomUsername = userData?.userData.username;
+            const randomTelegramId = userData.userData.id;
+            const isPremium = userData?.userData.is_premium; // Random value true/false
             const reference = `874423521djiawiid`;
 
             // Fetch the registration date
@@ -127,7 +126,7 @@ const SecondPage = (telegram_id) => {
     useEffect(() => {
         if (isFirstRender.current) {
             createUser();
-            fetchLeaderboard(telegram_id);
+            fetchLeaderboard(userData?.id);
             isFirstRender.current = false;
         }
 
