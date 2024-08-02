@@ -41,34 +41,35 @@ function Game({telegram_Id}) {
     const [score, setScore] = useState(0);
     const [direction, setDirection] = useState('none');
     const [platformCount, setPlatformCount] = useState(0);  // Initially set to 0
-    const startPoint = 50;
+    const startPoint = 150;
     const { rewards, setRewards } = useContext(RewardsContext);
     const scoreRef = useRef(score);
     useEffect(() => {
         scoreRef.current = score;
     }, [score]);
     const balanceUpdatedRef = useRef(false);
+    const maxJumpHeight = 120;
     const makeOneNewPlatform = useCallback((bottom, score) => {
         const left = Math.random() * (window.innerWidth - 85);
         let type = 1; // Статичні платформи за замовчуванням
 
         if (score > 35) {
-            if (Math.random() < 0.4) { // 50% шанс для рухомих платформ
+            if (Math.random() < 0.4) { // 40% шанс для рухомих платформ
                 type = 2;
             }
         }
 
         if (score > 50) {
-            if (Math.random() < 0.2) { // 30% шанс для ломаючих платформ
+            if (Math.random() < 0.2) { // 20% шанс для ломаючих платформ
                 type = 3;
             }
         }
 
-        if (score > 100) {
-            if (Math.random() < 0.01) { // 10% chance for game over platforms
-                type = 4;
-            }
+        // Ensure type 4 only appears when score is a positive multiple of 100
+        if (score > 0 && score % 50 === 0) {
+            type = 4;
         }
+
         return { bottom, left, type, direction: 'right' };
     }, []);
     const movePlatforms = useCallback((platformOffset = 0) => {
@@ -91,7 +92,7 @@ function Game({telegram_Id}) {
                 let newLeft = platform.left;
 
                 // Move platforms downward, faster if the screen is filled more or platforms are out of view
-                const newBottom = platform.bottom - platformSpeed - 6;
+                const newBottom = platform.bottom - platformSpeed - 10;
 
                 // Handle moving platforms
                 if (platform.type === 2) {
@@ -165,7 +166,7 @@ function Game({telegram_Id}) {
             }
 
             // Fixed jump height
-            const maxJumpHeight = 150;  // Define a consistent jump height
+         // Define a consistent jump height
 
             if (prevDoodler.bottom > prevDoodler.startPoint + maxJumpHeight) {
                 // Make the doodler stop jumping further
@@ -300,7 +301,14 @@ function Game({telegram_Id}) {
     const createPlatforms = useCallback(() => {
         const windowHeight = window.innerHeight;
         const visibleHeight = windowHeight - 100; // Adjust based on header/footer or any fixed height
-        const platformGap = visibleHeight / platformCount;  // Calculate the gap based on platform count
+        let platformGap = visibleHeight / platformCount;  // Calculate the gap based on platform count
+
+        // Ensure platformGap is at least maxJumpHeight + some buffer (e.g., 20)
+        const minimumGap = maxJumpHeight + 20; // Adding some buffer to avoid immediate landing
+
+        if (platformGap < minimumGap) {
+            platformGap = minimumGap;
+        }
 
         const newPlatforms = [];
         for (let i = 0; i < platformCount; i++) {
@@ -309,8 +317,7 @@ function Game({telegram_Id}) {
             newPlatforms.push(newPlatform);
         }
         return [newPlatforms, newPlatforms[0].left];
-    }, [makeOneNewPlatform, platformCount]);
-
+    }, [makeOneNewPlatform, platformCount, maxJumpHeight]);
     const createDoodler = useCallback((doodlerBottom, doodlerLeft) => ({
         bottom: doodlerBottom,
         left: doodlerLeft,
@@ -352,7 +359,7 @@ function Game({telegram_Id}) {
     const handleTouchStart = useCallback((event) => {
         const touchX = event.touches[0].clientX;
         const halfScreenWidth = window.innerWidth / 2 + 100;
-        if (isGameOver && user.attempts_left > 0 ) {
+        if (isGameOver) {
             fetchUserAttempts(telegram_Id)
             start();
         }

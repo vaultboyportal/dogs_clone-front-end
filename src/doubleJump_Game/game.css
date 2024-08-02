@@ -21,7 +21,10 @@ body{
     position: absolute;
     border-radius: 0.2px;
 }
-
+.game-over{
+    width: 120px !important;
+    height: auto;
+}
 .platform {
     width: 65px;
     height: 20px;
