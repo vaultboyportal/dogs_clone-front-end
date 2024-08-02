@@ -2,6 +2,7 @@ import React from 'react';
 
 const CommunitySlide = ({ title, text, buttonText,url }) => {
     const handleClick = () => {
+        window.Telegram.WebApp.HapticFeedback.impactOccurred('soft');
         window.open(url, '_blank');
     }
     return (

@@ -14,7 +14,10 @@ const BottomNavbar = () => {
         <div className="_navbar_1cr97_7">
             <div
                 className={`_navbarItem_1cr97_20 ${isActive("/home") ? "_isActive_1cr97_41" : ""}`}
-                onClick={() => navigate("/home")}
+                onClick={() => {
+                    navigate("/home")
+                    window.Telegram.WebApp.HapticFeedback.impactOccurred('soft');
+                }}
             >
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -36,7 +39,10 @@ const BottomNavbar = () => {
 
             <div
                 className={`_navbarItem_1cr97_20 ${isActive("/game") ? "_isActive_1cr97_41" : ""}`}
-                onClick={() => navigate("/game")}
+                onClick={() => {
+                    navigate("/game")
+                    window.Telegram.WebApp.HapticFeedback.impactOccurred('soft');
+                }}
             >
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -58,7 +64,10 @@ const BottomNavbar = () => {
 
             <div
                 className={`_navbarItem_1cr97_20 ${isActive("/leaderboard") ? "_isActive_1cr97_41" : ""}`}
-                onClick={() => navigate("/leaderboard")}
+                onClick={() => {
+                    navigate("/leaderboard")
+                    window.Telegram.WebApp.HapticFeedback.impactOccurred('soft');
+                }}
             >
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -80,7 +89,10 @@ const BottomNavbar = () => {
 
             <div
                 className={`_navbarItem_1cr97_20 ${isActive("/invite") ? "_isActive_1cr97_41" : ""}`}
-                onClick={() => navigate("/invite")}
+                onClick={() => {
+                    navigate("/invite")
+                    window.Telegram.WebApp.HapticFeedback.impactOccurred('soft');
+                }}
             >
                 <svg
                     xmlns="http://www.w3.org/2000/svg"

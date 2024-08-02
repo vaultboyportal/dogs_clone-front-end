@@ -92,6 +92,7 @@ const PreLoad = ({ telegramId }) => {
             const response = await axios.get(`${API_BASE_URL}/users/${telegramId}/tasks/`);
             if (response.status === 200 && response.data.status === "success") {
                 setTasks(response.data.tasks);
+                window.Telegram.WebApp.HapticFeedback.impactOccurred('heavy');
                 navigate("/home");
             } else {
                 console.error('Error fetching tasks:', response.data.message);

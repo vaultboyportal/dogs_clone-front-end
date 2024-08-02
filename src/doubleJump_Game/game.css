@@ -10,14 +10,13 @@ body{
     border-radius: 10px;
     border-color: white;
     background: rgba(255, 158, 72, 1);
-
     position: relative;
     font-size: 200px;
     text-align: center;
 }
 
 .doodler {
-    width: 25%;
+    width: 120px;
     height: auto;
     position: absolute;
     border-radius: 0.2px;
@@ -49,4 +48,5 @@ body{
     width: 100%;
     border-radius: 10px;
     margin-right: 0.5em;
+    z-index: 10000;
 }

@@ -5,6 +5,7 @@ import {API_BASE_URL} from '../helpers/api';
 const InvitePage = () => {
     const navigate = useNavigate();
     const handleGoToScore = () => {
+        window.Telegram.WebApp.HapticFeedback.impactOccurred('light');
         navigate("/last_check");
     };
     return (
@@ -33,7 +34,7 @@ const InvitePage = () => {
                     </div>
                     <div className="_subtitleEmpty_1x19s_19">Tap on the button to invite your friends</div>
                     <div className="_buttonWrap_1x19s_70">
-                        <div className="_root_oar9p_1 _type-white_oar9p_43">Invite friends</div>
+                        <div className="_root_oar9p_1 _type-white_oar9p_43" onClick={handleGoToScore}>Invite friends</div>
                     </div>
                 </div>
             </div>

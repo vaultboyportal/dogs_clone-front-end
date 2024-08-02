@@ -3,14 +3,18 @@ import './game.css';
 import {UserContext} from "../context/UserContext";
 import axios from 'axios';
 import {API_BASE_URL} from '../helpers/api';
+import {RewardsContext} from "../context/RewardsContext";
 function Platforms({ platforms }) {
     return platforms.map((platform, index) => (
         <div
             key={index}
-            className={`platform ${platform.isDeadly ? 'deadly' : ''}`}
+            className={`platform ${platform.type === 3 ? 'deadly' : ''} ${platform.type === 4 ? 'game-over' : ''}`}
             style={{ left: `${platform.left}px`, bottom: `${platform.bottom}px` }}
         >
-            <img src={`${process.env.PUBLIC_URL}/resources_directory/platform_type_${platform.type}.webp`} />
+            <img
+                src={`${process.env.PUBLIC_URL}/resources_directory/platform_type_${platform.type}.webp`}
+                alt={`Platform type ${platform.type}`}
+            />
         </div>
     ));
 }
@@ -29,65 +33,136 @@ function Doodler({ doodler }) {
 }
 
 function Game({telegram_Id}) {
+    const [lastPlatformHeight, setLastPlatformHeight] = useState(0);
     const { user, setUser,updateUserBalance  } = useContext(UserContext);
     const [isGameOver, setIsGameOver] = useState(true);
     const [platforms, setPlatforms] = useState([]);
     const [doodler, setDoodler] = useState({});
     const [score, setScore] = useState(0);
     const [direction, setDirection] = useState('none');
-    const platformCount = 7;
+    const [platformCount, setPlatformCount] =  useState(15);;
     const startPoint = 100;
-
+    const { rewards, setRewards } = useContext(RewardsContext);
     const makeOneNewPlatform = useCallback((bottom, score) => {
-        const left = Math.random() * 315;
+        const left = Math.random() * (window.innerWidth - 85);
         let type = 1; // Статичні платформи за замовчуванням
 
-        if (score > 100) {
-            if (Math.random() < 0.5) { // 50% шанс для рухомих платформ
+        if (score > 35) {
+            if (Math.random() < 0.4) { // 50% шанс для рухомих платформ
                 type = 2;
             }
         }
 
-        if (score > 200) {
-            if (Math.random() < 0.3) { // 30% шанс для ломаючих платформ
+        if (score > 50) {
+            if (Math.random() < 0.2) { // 30% шанс для ломаючих платформ
                 type = 3;
             }
         }
 
+        if (score > 100) {
+            if (Math.random() < 0.1) { // 10% chance for game over platforms
+                type = 4;
+            }
+        }
         return { bottom, left, type, direction: 'right' };
     }, []);
-    const movePlatforms = useCallback(() => {
-        if (doodler.bottom > 200) {
-            setPlatforms((prevPlatforms) => {
-                const newPlatforms = prevPlatforms.map((platform) => {
-                    let newLeft = platform.left;
-                    if (platform.type === 2) { // Рухомі платформи
-                        if (platform.direction === 'right') {
-                            newLeft += 2;
-                            if (newLeft >= 315) {
-                                platform.direction = 'left';
-                            }
-                        } else {
-                            newLeft -= 2;
-                            if (newLeft <= 0) {
-                                platform.direction = 'right';
-                            }
+    const movePlatforms = useCallback((platformOffset = 0) => {
+        setPlatforms((prevPlatforms) => {
+            const newPlatforms = prevPlatforms.map((platform) => {
+                let newLeft = platform.left;
+
+                // Adjust platform speed based on the offset
+                const platformSpeed = 8 + platformOffset / 50;
+
+                // Move platforms downward, faster if the doodler is higher
+                const newBottom = platform.bottom - platformSpeed - 4;
+
+                // Handle moving platforms
+                if (platform.type === 2) {
+                    if (platform.direction === 'right') {
+                        newLeft += 2;
+                        if (newLeft >= 315) {
+                            platform.direction = 'left';
+                        }
+                    } else {
+                        newLeft -= 2;
+                        if (newLeft <= 0) {
+                            platform.direction = 'right';
                         }
                     }
-                    return { ...platform, bottom: platform.bottom - 7, left: newLeft };
-                });
-                if (newPlatforms[0].bottom < 50) {
-                    newPlatforms.shift();
-                    setScore((prevScore) => {
-                        const newScore = prevScore + 5;
-                        newPlatforms.push(makeOneNewPlatform(850, newScore));
-                        return newScore;
-                    });
                 }
-                return newPlatforms;
+
+                return { ...platform, bottom: newBottom, left: newLeft };
             });
-        }
-    }, [doodler.bottom, makeOneNewPlatform]);
+
+            // Add new platforms when existing platforms disappear
+            if (newPlatforms[0].bottom < 150) {
+                newPlatforms.shift();
+                setScore((prevScore) => {
+                    const newScore = prevScore + 1;
+                    newPlatforms.push(makeOneNewPlatform(window.innerHeight, newScore));  // Add a new platform
+                    return newScore;
+                });
+            }
+
+            return newPlatforms;
+        });
+    }, []);
+
+    const moveMovingPlatforms = useCallback(() => {
+        setPlatforms((prevPlatforms) => {
+            return prevPlatforms.map((platform) => {
+                if (platform.type === 2) { // Check if the platform is of type 2
+                    let newLeft = platform.left;
+
+                    // Move the platform left or right based on its direction
+                    if (platform.direction === 'right') {
+                        newLeft += 2;
+                        if (newLeft >= window.innerWidth - 85) { // Change direction when hitting the edge
+                            platform.direction = 'left';
+                        }
+                    } else {
+                        newLeft -= 2;
+                        if (newLeft <= 0) {
+                            platform.direction = 'right';
+                        }
+                    }
+
+                    return { ...platform, left: newLeft }; // Update the platform's left position
+                }
+                return platform; // Return the platform unchanged if not type 2
+            });
+        });
+    }, []);
+
+
+    const jump = useCallback(() => {
+        setDoodler((prevDoodler) => {
+            let newLeft = prevDoodler.left;
+
+            // Character movement to the left and right
+            if (direction === 'left' && prevDoodler.left > 0) {
+                newLeft = prevDoodler.left - 5;
+            } else if (direction === 'right' && prevDoodler.left < 340) {
+                newLeft = prevDoodler.left + 5;
+            }
+
+            // Fixed jump height
+            const maxJumpHeight = 200;  // Define a consistent jump height
+
+            if (prevDoodler.bottom > prevDoodler.startPoint + maxJumpHeight) {
+                // Make the doodler stop jumping further
+                return { ...prevDoodler, isJumping: false };
+            }
+
+            // Move platforms only if jumping higher
+            if (prevDoodler.bottom > window.innerHeight/2) {
+                movePlatforms();  // Move platforms to give illusion of doodler moving upward
+            }
+
+            return { ...prevDoodler, bottom: prevDoodler.bottom + 16, left: newLeft };
+        });
+    }, [direction, movePlatforms]);
 
 
     const fall = useCallback(() => {
@@ -95,39 +170,33 @@ function Game({telegram_Id}) {
             let newLeft = prevDoodler.left;
             if (direction === 'left' && prevDoodler.left > 0) {
                 newLeft = prevDoodler.left - 8;
-            } else if (direction === 'right' && prevDoodler.left < 340) {
+            } else if (direction === 'right' && prevDoodler.left < (window.innerWidth - 85)) {
                 newLeft = prevDoodler.left + 8;
             }
-            if (prevDoodler.bottom <= 0) {
+            if (prevDoodler.bottom <= 10) {
                 gameOver();
             }
-            return { ...prevDoodler, bottom: prevDoodler.bottom - 12, left: newLeft };
-        });
-    }, [direction]);
-
-    const jump = useCallback(() => {
-        setDoodler((prevDoodler) => {
-            let newLeft = prevDoodler.left;
-            if (direction === 'left' && prevDoodler.left > 0) {
-                newLeft = prevDoodler.left - 5 ;
-            } else if (direction === 'right' && prevDoodler.left < 340) {
-                newLeft = prevDoodler.left + 5 ;
-            }
-            if (prevDoodler.bottom > prevDoodler.startPoint + 250) {
-                return { ...prevDoodler, isJumping: false };
-            }
-            return { ...prevDoodler, bottom: prevDoodler.bottom + 20, left: newLeft };
+            return { ...prevDoodler, bottom: prevDoodler.bottom - 17, left: newLeft };
         });
     }, [direction]);
 
     const gameOver = useCallback(() => {
+        console.log(user.balance)
+        console.log(score)
+        const updatedBalance = user.balance + score;
+        updateUserBalance(updatedBalance);
+        setRewards(prevRewards => ({
+            ...prevRewards,
+            game: prevRewards.game + score,
+            total: prevRewards.total + score
+        }));
         setIsGameOver(true);
     }, []);
 
     const checkCollision = useCallback(() => {
         if (doodler.left <= 0) {
             setDirection('right');
-        } else if (doodler.left >= 340) {
+        } else if (doodler.left >= 500) {
             setDirection('left');
         }
     }, [doodler.left]);
@@ -136,21 +205,21 @@ function Game({telegram_Id}) {
         if (!isGameOver) {
             const interval = setInterval(() => {
                 checkCollision();
-                movePlatforms();
+                moveMovingPlatforms();
                 if (doodler.isJumping) {
                     jump();
                 } else {
                     fall();
                 }
 
-                platforms.forEach((platform) => {
-                    const doodlerTop = doodler.bottom + 60; // Висота doodler
+                platforms.forEach((platform, index) => {
+                    const doodlerTop = doodler.bottom + 70;
                     const doodlerLeft = doodler.left;
                     const doodlerRight = doodler.left + 60;
 
-                    const platformTop = platform.bottom + 15;
+                    const platformTop = platform.bottom + 10;
                     const platformLeft = platform.left;
-                    const platformRight = platform.left + 85;
+                    const platformRight = platform.left + 50;
 
                     if (
                         doodlerTop >= platform.bottom &&
@@ -158,12 +227,17 @@ function Game({telegram_Id}) {
                         doodlerRight >= platformLeft &&
                         doodlerLeft <= platformRight &&
                         !doodler.isJumping &&
-                        doodler.bottom >= platformTop - 10 && // Покращення точності колізії
+                        doodler.bottom >= platform.bottom - 10 &&
                         doodler.bottom <= platformTop + 10
                     ) {
+                        window.Telegram.WebApp.HapticFeedback.impactOccurred('medium');
                         if (platform.type === 3) {
-                            setPlatforms((prevPlatforms) => prevPlatforms.filter(p => p !== platform)); // Видалити ломаючу платформу
+                            setPlatforms((prevPlatforms) => prevPlatforms.filter((_, i) => i !== index)); // Remove broken platform
+                        } else if (platform.type === 4) {
+                            gameOver(); // Game over if touching a game over platform
                         }
+
+                        // Check if the platform is higher than the last one
                         setDoodler((prevDoodler) => ({
                             ...prevDoodler,
                             isJumping: true,
@@ -176,14 +250,17 @@ function Game({telegram_Id}) {
         }
     }, [checkCollision, doodler, fall, isGameOver, jump, movePlatforms, platforms]);
 
+
     const createPlatforms = useCallback(() => {
         const newPlatforms = [];
+        const platformGap = 600 / platformCount;  // Reduce platform gap
+
         for (let i = 0; i < platformCount; i++) {
-            const platGap = 800 / platformCount;
-            const newPlatBottom = 100 + i * platGap;
-            const newPlatform = makeOneNewPlatform(newPlatBottom);
+            const newPlatBottom = 200 + i * platformGap;
+            const newPlatform = makeOneNewPlatform(newPlatBottom, 0); // Initial score is 0
             newPlatforms.push(newPlatform);
         }
+        setPlatformCount(8)
         return [newPlatforms, newPlatforms[0].left];
     }, [makeOneNewPlatform]);
 
@@ -206,7 +283,8 @@ function Game({telegram_Id}) {
     const handleTouchStart = useCallback((event) => {
         const touchX = event.touches[0].clientX;
         const halfScreenWidth = window.innerWidth / 2;
-        if (isGameOver) {
+        if (isGameOver && user.attempts_left>0) {
+            fetchUserAttempts(telegram_Id)
             start();
         }
         if (touchX < halfScreenWidth) {

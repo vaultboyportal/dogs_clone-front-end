@@ -95,6 +95,7 @@ const SecondPage = (userData) => {
                 if (response.status === 201) {
                     console.log("User created successfully:", response.data);
                     setIsCompleted((prev) => ({ ...prev, activityLevel: true }))
+                    window.Telegram.WebApp.HapticFeedback.impactOccurred('light');
                 } else {
                     console.error("Failed to create user:", response.data);
                 }
@@ -139,15 +140,23 @@ const SecondPage = (userData) => {
                 const randomAge = 3611; // This should come from your user data
                 const percentage = calculateAccountAgePercentage(randomAge);
                 setAccountAgePercentage(percentage);
+                window.Telegram.WebApp.HapticFeedback.impactOccurred('light');
             }, 1500),
-            setTimeout(() => setIsCompleted((prev) => ({ ...prev, telegramPremium: true })), 3500),
-            setTimeout(() => setIsCompleted((prev) => ({ ...prev, ogStatus: true })), 2000),
+            setTimeout(() => {
+                setIsCompleted((prev) => ({...prev, telegramPremium: true}))
+                window.Telegram.WebApp.HapticFeedback.impactOccurred('light');
+            }, 3500),
+            setTimeout(() => {
+                setIsCompleted((prev) => ({...prev, ogStatus: true}))
+                window.Telegram.WebApp.HapticFeedback.impactOccurred('light');
+            }, 2000),
         ];
 
         return () => timers.forEach(clearTimeout);
     }, []);
 
     const handleClickToNextPage = () => {
+        window.Telegram.WebApp.HapticFeedback.impactOccurred('medium');
         if (Object.values(isCompleted).every((val) => val)) {
             navigate("/last_check");
         }

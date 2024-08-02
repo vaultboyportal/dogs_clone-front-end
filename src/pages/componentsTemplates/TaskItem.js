@@ -67,6 +67,7 @@ const TaskItem = ({ title, footerText, url, index, setAnimated }) => {
     };
 
     const handleButtonClick = () => {
+        window.Telegram.WebApp.HapticFeedback.impactOccurred('medium');
         if (!isChecked) {
             window.open(url, '_blank');
             setIsChecked(true);

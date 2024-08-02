@@ -8,6 +8,7 @@ const LastPage = () => {
     const [state, setState] = useState("initial"); // Текущее состояние страницы
     const navigate = useNavigate();
     const handleContinue = () => {
+        window.Telegram.WebApp.HapticFeedback.impactOccurred('medium');
         if (state === "initial") {
             // Переключаем состояние, чтобы обновить страницу
             setState("amazing");
@@ -17,6 +18,7 @@ const LastPage = () => {
         }
     };
     const handleSwitch = () => {
+        window.Telegram.WebApp.HapticFeedback.impactOccurred('soft');
         // Переключаем состояние между "initial" и "amazing"
         setState((prevState) => (prevState === "initial" ? "amazing" : "initial"));
     };

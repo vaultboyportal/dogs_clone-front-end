@@ -13,6 +13,7 @@ const HomePage = () => {
     const { rewards } = useContext(RewardsContext);
     const {tasks} = useContext(TasksContext);
     const handleGoToScore = () => {
+        window.Telegram.WebApp.HapticFeedback.impactOccurred('light');
         navigate("/last_check");
     };
     const [animated, setAnimated] = useState(false);
