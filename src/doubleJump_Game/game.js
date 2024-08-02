@@ -35,8 +35,7 @@ function Game({telegram_Id}) {
     const [doodler, setDoodler] = useState({});
     const [score, setScore] = useState(0);
     const [direction, setDirection] = useState('none');
-    const [speedFactor, setSpeedFactor] = useState(1);
-    const platformCount = 5;
+    const platformCount = 7;
     const startPoint = 100;
 
     const makeOneNewPlatform = useCallback((bottom) => {
@@ -55,45 +54,42 @@ function Game({telegram_Id}) {
                     newPlatforms.shift();
                     setScore((prevScore) => {
                         const newScore = prevScore + 5;
-                        if (newScore % 100 === 0) {
-                            setSpeedFactor((prevSpeedFactor) => prevSpeedFactor + 0.2);
-                        }
                         return newScore;
                     });
-                    newPlatforms.push(makeOneNewPlatform(600));
+                    newPlatforms.push(makeOneNewPlatform(850));
                 }
                 return newPlatforms;
             });
         }
-    }, [doodler.bottom, makeOneNewPlatform, speedFactor]);
+    }, [doodler.bottom, makeOneNewPlatform]);
 
     const fall = useCallback(() => {
         setDoodler((prevDoodler) => {
             let newLeft = prevDoodler.left;
             if (direction === 'left' && prevDoodler.left > 0) {
-                newLeft = prevDoodler.left - 5 * speedFactor;
+                newLeft = prevDoodler.left - 8;
             } else if (direction === 'right' && prevDoodler.left < 340) {
-                newLeft = prevDoodler.left + 5 * speedFactor;
+                newLeft = prevDoodler.left + 8;
             }
             if (prevDoodler.bottom <= 0) {
                 gameOver();
             }
-            return { ...prevDoodler, bottom: prevDoodler.bottom - 5 * speedFactor, left: newLeft };
+            return { ...prevDoodler, bottom: prevDoodler.bottom - 12, left: newLeft };
         });
-    }, [direction, speedFactor]);
+    }, [direction]);
 
     const jump = useCallback(() => {
         setDoodler((prevDoodler) => {
             let newLeft = prevDoodler.left;
             if (direction === 'left' && prevDoodler.left > 0) {
-                newLeft = prevDoodler.left - 5 * speedFactor;
+                newLeft = prevDoodler.left - 5 ;
             } else if (direction === 'right' && prevDoodler.left < 340) {
-                newLeft = prevDoodler.left + 5 * speedFactor;
+                newLeft = prevDoodler.left + 5 ;
             }
             if (prevDoodler.bottom > prevDoodler.startPoint + 200) {
                 return { ...prevDoodler, isJumping: false };
             }
-            return { ...prevDoodler, bottom: prevDoodler.bottom + 20 * speedFactor, left: newLeft };
+            return { ...prevDoodler, bottom: prevDoodler.bottom + 20, left: newLeft };
         });
     }, [direction]);
 
@@ -143,7 +139,7 @@ function Game({telegram_Id}) {
     const createPlatforms = useCallback(() => {
         const newPlatforms = [];
         for (let i = 0; i < platformCount; i++) {
-            const platGap = 600 / platformCount;
+            const platGap = 800 / platformCount;
             const newPlatBottom = 100 + i * platGap;
             const newPlatform = makeOneNewPlatform(newPlatBottom);
             newPlatforms.push(newPlatform);
@@ -165,14 +161,12 @@ function Game({telegram_Id}) {
         setScore(0);
         setPlatforms(newPlatforms);
         setDoodler(createDoodler(startPoint, doodlerLeft));
-        setSpeedFactor(1);
     }, [createDoodler, createPlatforms]);
 
     const handleTouchStart = useCallback((event) => {
         const touchX = event.touches[0].clientX;
         const halfScreenWidth = window.innerWidth / 2;
         if (isGameOver) {
-            fetchUserAttempts(telegram_Id)
             start();
         }
         if (touchX < halfScreenWidth) {

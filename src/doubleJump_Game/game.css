@@ -18,9 +18,9 @@ body{
 
 .doodler {
     width: 25%;
-    height: 15%;
+    height: auto;
     position: absolute;
-    border-radius: 1px;
+    border-radius: 0.2px;
 }
 
 .platform {
@@ -49,7 +49,4 @@ body{
     width: 100%;
     border-radius: 10px;
     margin-right: 0.5em;
-}
-.bomb {
-    font-size: 30px;
 }
