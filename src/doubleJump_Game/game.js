@@ -345,7 +345,7 @@ function Game({telegram_Id}) {
         }
     };
     return (
-        <div className="grid" onKeyDown={handleKeyDown} onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd} >
+        <div className="grid" onKeyDown={handleKeyDown} onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}  tabIndex="0" >
             {!isGameOver ? (
                 <>
                     <div className="score">{score}</div>
