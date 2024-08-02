@@ -373,7 +373,7 @@ function Game({telegram_Id}) {
     }, []);
 
     const handleKeyDown = useCallback((event) => {
-        if (event.key === 'Enter' && isGameOver) {
+        if (event.key === 'Enter' && isGameOver && user.attempts_left > 0) {
             fetchUserAttempts(telegram_Id)
             start();
         } else if (event.key === 'ArrowLeft') {
