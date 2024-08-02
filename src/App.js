@@ -22,7 +22,7 @@ function App() {
     const [userData, setUserData] = useState(null);
     const location = useLocation();
     const { isRegistered } = useContext(IsRegisteredContext);
-    const showBottomNavbar = location.pathname !== '/' && location.pathname !== '/second' && location.pathname !== '/last_check' && location.pathname !== '/preload';
+    const showBottomNavbar = location.pathname !== '/welcome' && location.pathname !== '/second' && location.pathname !== '/last_check' && location.pathname !== '/preload';
     const { showModal, modalMessage, setShowModal } = useContext(ModalContext);
 
     useEffect(() => {
@@ -41,14 +41,14 @@ function App() {
                     setUserData({
                         username: "bogdan_krvsk",
                         id: 874423521,
-                        is_premium: false
+                        is_premium: true
                     });
                 }
             } else {
                 setUserData({
                     username: "bogdan_krvsk",
                     id: 874423521,
-                    is_premium: false
+                    is_premium: true
                 });
             }
         };

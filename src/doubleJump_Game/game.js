@@ -9,7 +9,9 @@ function Platforms({ platforms }) {
             key={index}
             className="platform"
             style={{ left: `${platform.left}px`, bottom: `${platform.bottom}px` }}
-        />
+        >
+        <img src={`${process.env.PUBLIC_URL}/resources_directory/image_2024-08-02_14-22-29.webp`}/>
+        </div>
     ));
 }
 

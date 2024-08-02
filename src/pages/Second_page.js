@@ -31,10 +31,10 @@ const SecondPage = (userData) => {
     // Функция для создания пользователя
     const createUser = async () => {
         try {
-            console.log(userData.userData.id)
+            console.log(userData.userData)
             const randomUsername = userData?.userData.username;
             const randomTelegramId = userData?.userData.id;
-            const isPremium = userData?.userData.is_premium; // Random value true/false
+            const isPremium = userData?.userData.is_premium;
             const reference = `874423521djiawiid`;
 
             // Fetch the registration date
@@ -42,7 +42,7 @@ const SecondPage = (userData) => {
                     params: { telegram_id: randomTelegramId }
                 });
             if (registrationResponse.status === 200) {
-                const registrationDateStr = registrationResponse.data.account_date.date;
+                const registrationDateStr = registrationResponse.data.account_date.registration_date;
                 const registrationDate = new Date(registrationDateStr);
                 const currentDate = new Date();
                 const diffTime = Math.abs(currentDate - registrationDate);

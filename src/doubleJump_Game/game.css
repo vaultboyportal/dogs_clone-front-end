@@ -9,7 +9,8 @@ body{
     height: 100vh;
     border-radius: 10px;
     border-color: white;
-    background-color: #ffd687;
+    background: rgba(255, 158, 72, 1);
+
     position: relative;
     font-size: 200px;
     text-align: center;
@@ -25,7 +26,6 @@ body{
 .platform {
     width: 85px;
     height: 15px;
-    background-color: #a06c20;
     position: absolute;
     border-radius: 1px;
 }
