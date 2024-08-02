@@ -40,9 +40,13 @@ function Game({telegram_Id}) {
     const [doodler, setDoodler] = useState({});
     const [score, setScore] = useState(0);
     const [direction, setDirection] = useState('none');
-    const [platformCount, setPlatformCount] =  useState(15);;
-    const startPoint = 100;
+    const [platformCount, setPlatformCount] = useState(0);  // Initially set to 0
+    const startPoint = 50;
     const { rewards, setRewards } = useContext(RewardsContext);
+    const scoreRef = useRef(score);
+    useEffect(() => {
+        scoreRef.current = score;
+    }, [score]);
     const balanceUpdatedRef = useRef(false);
     const makeOneNewPlatform = useCallback((bottom, score) => {
         const left = Math.random() * (window.innerWidth - 85);
@@ -61,7 +65,7 @@ function Game({telegram_Id}) {
         }
 
         if (score > 100) {
-            if (Math.random() < 0.1) { // 10% chance for game over platforms
+            if (Math.random() < 0.01) { // 10% chance for game over platforms
                 type = 4;
             }
         }
@@ -169,7 +173,7 @@ function Game({telegram_Id}) {
             }
 
             // Move platforms only if jumping higher
-            if (prevDoodler.bottom > window.innerHeight/2) {
+            if (prevDoodler.bottom > window.innerHeight/2 - 100) {
                 movePlatforms();  // Move platforms to give illusion of doodler moving upward
             }
 
@@ -189,21 +193,51 @@ function Game({telegram_Id}) {
             if (prevDoodler.bottom <= 10) {
                 gameOver();
             }
+
             return { ...prevDoodler, bottom: prevDoodler.bottom - 8, left: newLeft };
         });
     }, [direction]);
+    const updateUserGameBalance = async () => {
+        try {
+            const updatedBalance = user.balance + scoreRef.current;
+            console.log(updatedBalance);
+            const response = await axios.post(`${API_BASE_URL}/users/update_game_balance/`, {
+                telegram_id: telegram_Id,
+                balance: updatedBalance,
+            }, {
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            });
 
-    const gameOver = useCallback(() => {
-        if (!balanceUpdatedRef.current) { // Check if balance has not been updated yet
-            console.log(user.balance);
-            console.log(score);
-            const updatedBalance = user.balance + score;
-            updateUserGameBalance(updatedBalance);
-            balanceUpdatedRef.current = true; // Set ref to true after update
+            if (response.status === 200) {
+                console.log("Balance updated successfully on server:", response.data.user);
+                // Update the local context state
+                setUser((prevUser) => ({
+                    ...prevUser,
+                    balance: updatedBalance,
+                }));
+                setRewards(prevRewards => ({
+                    ...prevRewards,
+                    game: prevRewards.game + scoreRef.current,
+                    total: prevRewards.total + scoreRef.current
+                }));
+            } else {
+                console.error("Failed to update balance on server:", response.data.message);
+            }
+        } catch (error) {
+            console.error("Error updating balance on server:", error);
         }
-
+    };
+    const gameOver = useCallback(() => {
+        if (!balanceUpdatedRef.current) {
+            const currentScore = scoreRef.current; // Get the current score from the ref
+            console.log("Current score before update:", currentScore);
+            updateUserGameBalance(currentScore);
+            balanceUpdatedRef.current = true;
+        }
         setIsGameOver(true);
-    }, []);
+    }, [updateUserGameBalance]);
 
     const checkCollision = useCallback(() => {
         if (doodler.left <= 0) {
@@ -264,17 +298,18 @@ function Game({telegram_Id}) {
 
 
     const createPlatforms = useCallback(() => {
-        const newPlatforms = [];
-        const platformGap = 600 / platformCount;  // Reduce platform gap
+        const windowHeight = window.innerHeight;
+        const visibleHeight = windowHeight - 100; // Adjust based on header/footer or any fixed height
+        const platformGap = visibleHeight / platformCount;  // Calculate the gap based on platform count
 
+        const newPlatforms = [];
         for (let i = 0; i < platformCount; i++) {
             const newPlatBottom = 200 + i * platformGap;
-            const newPlatform = makeOneNewPlatform(newPlatBottom, 0); // Initial score is 0
+            const newPlatform = makeOneNewPlatform(newPlatBottom, 0);
             newPlatforms.push(newPlatform);
         }
-        setPlatformCount(8)
         return [newPlatforms, newPlatforms[0].left];
-    }, [makeOneNewPlatform]);
+    }, [makeOneNewPlatform, platformCount]);
 
     const createDoodler = useCallback((doodlerBottom, doodlerLeft) => ({
         bottom: doodlerBottom,
@@ -285,13 +320,35 @@ function Game({telegram_Id}) {
     }), []);
 
     const start = useCallback(() => {
+        balanceUpdatedRef.current = false;
         const [newPlatforms, doodlerLeft] = createPlatforms();
         setIsGameOver(false);
         setScore(0);
         setPlatforms(newPlatforms);
         setDoodler(createDoodler(startPoint, doodlerLeft));
     }, [createDoodler, createPlatforms]);
+    useEffect(() => {
+        // Calculate the number of platforms based on the window size
+        const calculatePlatformCount = () => {
+            const windowHeight = window.innerHeight;
+            const platformGap = 100; // Desired gap between platforms
+            const calculatedCount = Math.ceil(windowHeight / platformGap);
+            setPlatformCount(calculatedCount);
+        };
 
+        calculatePlatformCount(); // Initial calculation
+
+        // Update the platform count when the window is resized
+        window.addEventListener('resize', calculatePlatformCount);
+        return () => window.removeEventListener('resize', calculatePlatformCount);
+    }, []);
+
+    useEffect(() => {
+        if (platformCount > 0) {
+            const [newPlatforms, doodlerLeft] = createPlatforms();
+            setPlatforms(newPlatforms);
+        }
+    }, [platformCount, createPlatforms]);
     const handleTouchStart = useCallback((event) => {
         const touchX = event.touches[0].clientX;
         const halfScreenWidth = window.innerWidth / 2 + 100;
@@ -311,7 +368,7 @@ function Game({telegram_Id}) {
     }, []);
 
     const handleKeyDown = useCallback((event) => {
-        if (event.key === 'Enter' && isGameOver) {
+        if (event.key === 'Enter' && isGameOver ) {
             fetchUserAttempts(telegram_Id)
             start();
         } else if (event.key === 'ArrowLeft') {
@@ -337,36 +394,6 @@ function Game({telegram_Id}) {
             }
         } catch (error) {
             console.error("Error fetching or using user attempts:", error);
-        }
-    };
-    const updateUserGameBalance = async (newBalance) => {
-        try {
-            const response = await axios.post(`${API_BASE_URL}/users/update_game_balance/`, {
-                telegram_id: telegram_Id,
-                balance: newBalance,
-            }, {
-                headers: {
-                    'Content-Type': 'application/json',
-                }
-            });
-
-            if (response.status === 200) {
-                console.log("Balance updated successfully on server:", response.data.user);
-                // Update the local context state
-                setUser((prevUser) => ({
-                    ...prevUser,
-                    balance: newBalance,
-                }));
-                setRewards(prevRewards => ({
-                    ...prevRewards,
-                    game: prevRewards.game + score,
-                    total: prevRewards.total + score
-                }));
-            } else {
-                console.error("Failed to update balance on server:", response.data.message);
-            }
-        } catch (error) {
-            console.error("Error updating balance on server:", error);
         }
     };
     return (
