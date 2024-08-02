@@ -33,8 +33,13 @@ body{
 }
 
 .instructions {
-    font-size: 6vw;
+    display: flex;
+    font-size: 20px;
     margin: 1em;
+    height: 50px;
+    text-align: center;
+    justify-content:center;
+    align-items:center;
     color: black;
     background-color: white;
     border-radius: 10px;
