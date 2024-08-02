@@ -40,7 +40,7 @@ function Game({telegram_Id}) {
     const [doodler, setDoodler] = useState({});
     const [score, setScore] = useState(0);
     const [direction, setDirection] = useState('none');
-    const [platformCount, setPlatformCount] =  useState(20);;
+    const [platformCount, setPlatformCount] =  useState(15);;
     const startPoint = 100;
     const { rewards, setRewards } = useContext(RewardsContext);
     const balanceUpdatedRef = useRef(false);
@@ -61,12 +61,7 @@ function Game({telegram_Id}) {
         }
 
         if (score > 100) {
-            if (Math.random() < 0.2) { // 10% chance for game over platforms
-                type = 4;
-            }
-        }
-        if (score > 300) {
-            if (Math.random() < 0.3) { // 10% chance for game over platforms
+            if (Math.random() < 0.1) { // 10% chance for game over platforms
                 type = 4;
             }
         }
@@ -92,7 +87,7 @@ function Game({telegram_Id}) {
                 let newLeft = platform.left;
 
                 // Move platforms downward, faster if the screen is filled more or platforms are out of view
-                const newBottom = platform.bottom - platformSpeed - 4;
+                const newBottom = platform.bottom - platformSpeed - 6;
 
                 // Handle moving platforms
                 if (platform.type === 2) {
@@ -207,11 +202,6 @@ function Game({telegram_Id}) {
             balanceUpdatedRef.current = true; // Set ref to true after update
         }
 
-        setRewards(prevRewards => ({
-            ...prevRewards,
-            game: prevRewards.game + score,
-            total: prevRewards.total + score
-        }));
         setIsGameOver(true);
     }, []);
 
@@ -282,7 +272,7 @@ function Game({telegram_Id}) {
             const newPlatform = makeOneNewPlatform(newPlatBottom, 0); // Initial score is 0
             newPlatforms.push(newPlatform);
         }
-        setPlatformCount(12)
+        setPlatformCount(8)
         return [newPlatforms, newPlatforms[0].left];
     }, [makeOneNewPlatform]);
 
@@ -366,6 +356,11 @@ function Game({telegram_Id}) {
                 setUser((prevUser) => ({
                     ...prevUser,
                     balance: newBalance,
+                }));
+                setRewards(prevRewards => ({
+                    ...prevRewards,
+                    game: prevRewards.game + score,
+                    total: prevRewards.total + score
                 }));
             } else {
                 console.error("Failed to update balance on server:", response.data.message);
