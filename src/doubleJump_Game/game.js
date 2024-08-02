@@ -1,4 +1,4 @@
-import {useState, useEffect, useCallback, useContext,useRef} from 'react';
+import React, {useState, useEffect, useCallback, useContext,useRef} from 'react';
 import './game.css';
 import {UserContext} from "../context/UserContext";
 import axios from 'axios';
@@ -410,12 +410,26 @@ function Game({telegram_Id}) {
                     <Platforms platforms={platforms} />
                 </>
             ) : (
-                <div className="instructions">
-                    DoodleJump <br/>
-                    Press Enter or tap the screen to start. <br/>
-                    Use arrow keys or swipe to navigate. Don't hit the floor! <br/>
-                    Your balance: {user.balance} <br/>
-                    Your charges: {user.attempts_left}
+                <div className="_view_sf2n5_1 _view_zhpdf_1" style={{opacity: 1}}>
+
+                    <div class="_title_1x19s_5">DoodleJump <br/>
+                        Press Enter or tap the screen to start.
+                    </div>
+                    <div className="_mascote_94k9d_1 _centered_94k9d_13">
+                        <img
+                            id="home-mascote"
+                            src={`${process.env.PUBLIC_URL}/resources_directory/13A8E8C5-B501-4EA6-B4AC-6BD22BD7A9BA.webp`}
+                            className="_doggy_94k9d_6 _width-82_94k9d_23 _mascote_1vo1r_60 _isRendered_1vo1r_63"
+                            alt="Mascote"
+                        />
+                    </div>
+                    <div className="instructions">
+                        Your balance: {user.balance}
+                    </div>
+                    <div className="instructions"> Your charges: {user.attempts_left}</div>
+                    <div class="_subtitleEmpty_1x19s_19 game_sub_title_ms718"> Use arrow keys or swipe to navigate. Don't hit the floor!
+                    </div>
+
                 </div>
             )}
         </div>

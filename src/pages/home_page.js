@@ -7,6 +7,12 @@ import CommunitySlide from './componentsTemplates/CommunitySlide';
 import TaskItem from './componentsTemplates/TaskItem';
 import RewardItem from './componentsTemplates/RewardItem';
 import {TasksContext} from "../context/TasksContext";
+import { Swiper, SwiperSlide } from 'swiper/react';
+import 'swiper/css';
+import 'swiper/css/bundle';
+import SwiperCore from 'swiper';
+import { Pagination } from 'swiper/modules';
+SwiperCore.use([Pagination]);
 const HomePage = () => {
     const navigate = useNavigate();
     const { user } = useContext(UserContext);
@@ -82,25 +88,47 @@ const HomePage = () => {
                             <div className="swiper-wrapper">
                                 <div className="swiper-slide swiper-slide-active" style={{width: "100%"}}>
                                     <div className="_itemWrap_1xku1_16 _itemWrapFirst_1xku1_20">
-                                        <CommunitySlide
-                                            title="OnlyUp Community"
-                                            text="3.2k"
-                                            buttonText="Join"
-                                            url="https://t.me/OnlyUP_Official_chat"
-                                        />
+                                        <div className="social-carousel">
+                                            <Swiper
+                                                spaceBetween={50}
+                                                slidesPerView={1}
+                                                pagination={{clickable: true}}
+                                            >
+                                                <SwiperSlide>
+                                                    <CommunitySlide
+                                                        title="OnlyUp Community"
+                                                        text="Home for Telegram $UP"
+                                                        buttonText="Join"
+                                                        url="https://t.me/OnlyUP_Official_chat"
+                                                    />
+                                                </SwiperSlide>
+                                                <SwiperSlide>
+                                                    <CommunitySlide
+                                                        title="Follow OnlyUP on X"
+                                                        text="Stay updated with the latest news"
+                                                        buttonText="Join"
+                                                        url="https://twitter.com/OnlyUP1B"
+                                                    />
+                                                </SwiperSlide>
+                                                <SwiperSlide>
+                                                    <CommunitySlide
+                                                        title="Join our telegram chat"
+                                                        text="2.8k+"
+                                                        buttonText="Join"
+                                                        url="https://t.me/OnlyUP_Official_chat"
+                                                    />
+                                                </SwiperSlide>
+                                            </Swiper>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                            <div
-                                className="swiper-pagination swiper-pagination-clickable swiper-pagination-bullets swiper-pagination-horizontal">
-                                <span className="swiper-pagination-bullet swiper-pagination-bullet-active"></span><span
-                                className="swiper-pagination-bullet"></span></div>
                         </div>
                     </div>
                     <div className="_taskList_dti3z_1">
                         <div className="_title_dti3z_5">Tasks</div>
                         <div>
-                            {tasks.map((task, index) => (
+                        {tasks.map((task, index) => (
                                 !task.completed && (
                                     <TaskItem
                                         key={index}

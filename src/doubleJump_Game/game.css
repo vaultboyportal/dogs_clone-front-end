@@ -35,13 +35,14 @@ body{
 .instructions {
     font-size: 6vw;
     margin: 1em;
-    margin-top: 50%;
     color: black;
     background-color: white;
     border-radius: 10px;
     line-height: 1.5;
 }
-
+.game_sub_title_ms718{
+    padding-top: 0px !important;
+}
 .score {
     user-select: none;
     text-align: center;
