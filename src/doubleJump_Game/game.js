@@ -49,7 +49,7 @@ function Game({telegram_Id}) {
             setPlatforms((prevPlatforms) => {
                 const newPlatforms = prevPlatforms.map((platform) => ({
                     ...platform,
-                    bottom: platform.bottom - 4 * speedFactor,
+                    bottom: platform.bottom - 8,
                 }));
                 if (newPlatforms[0].bottom < 10) {
                     newPlatforms.shift();
