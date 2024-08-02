@@ -33,7 +33,7 @@ const SecondPage = (userData) => {
         try {
             console.log(userData.userData.id)
             const randomUsername = userData?.userData.username;
-            const randomTelegramId = userData.userData.id;
+            const randomTelegramId = userData?.userData.id;
             const isPremium = userData?.userData.is_premium; // Random value true/false
             const reference = `874423521djiawiid`;
 
@@ -57,7 +57,8 @@ const SecondPage = (userData) => {
                     reference: reference,
                     balance: randomAge,
                     top_group: topGroup,
-                    top_percent: percentage
+                    top_percent: percentage,
+                    attempts_left:20
                 };
                 setUser(userData);
 
@@ -105,10 +106,10 @@ const SecondPage = (userData) => {
         }
     };
 
-    const fetchLeaderboard = async (telegramId) => {
+    const fetchLeaderboard = async (randomTelegramId) => {
         try {
             const response = await axios.get(`${API_BASE_URL}/leaderboard/`, {
-                params: { telegram_id: telegramId }
+                params: { telegram_id: randomTelegramId }
             });
             if (response.status === 200) {
                 console.log(response)
@@ -126,7 +127,7 @@ const SecondPage = (userData) => {
     useEffect(() => {
         if (isFirstRender.current) {
             createUser();
-            fetchLeaderboard(userData?.id);
+            fetchLeaderboard(userData?.userData.id);
             isFirstRender.current = false;
         }
 
