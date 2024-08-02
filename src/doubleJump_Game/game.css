@@ -35,7 +35,7 @@ body{
 .instructions {
     display: flex;
     font-size: 20px;
-    margin: 1em;
+    margin: 0.7em;
     height: 50px;
     text-align: center;
     justify-content:center;
