@@ -44,11 +44,12 @@ function Game({telegram_Id}) {
     const startPoint = 150;
     const { rewards, setRewards } = useContext(RewardsContext);
     const scoreRef = useRef(score);
+    const type4PlatformAddedRef = useRef(false);
+
     useEffect(() => {
         scoreRef.current = score;
     }, [score]);
     const balanceUpdatedRef = useRef(false);
-    const maxJumpHeight = 120;
     const makeOneNewPlatform = useCallback((bottom, score) => {
         const left = Math.random() * (window.innerWidth - 85);
         let type = 1; // Статичні платформи за замовчуванням
@@ -65,9 +66,12 @@ function Game({telegram_Id}) {
             }
         }
 
-        // Ensure type 4 only appears when score is a positive multiple of 100
-        if (score > 0 && score % 50 === 0) {
+        // Ensure type 4 only appears when score is a positive multiple of 100 and hasn't been added yet
+        if (score > 0 && score % 100 === 0 && !type4PlatformAddedRef.current) {
             type = 4;
+            type4PlatformAddedRef.current = true; // Mark that a type 4 platform has been added
+        } else if (score > 0 && score % 100 !== 0) {
+            type4PlatformAddedRef.current = false; // Reset the flag if not at a multiple of 100
         }
 
         return { bottom, left, type, direction: 'right' };
@@ -75,26 +79,18 @@ function Game({telegram_Id}) {
     const movePlatforms = useCallback((platformOffset = 0) => {
         setPlatforms((prevPlatforms) => {
             const screenHeight = window.innerHeight;
-            const platformSpeedBase = 8;
-            const platformSpeedIncrement = 2;
+            const platformSpeedBase = 7.5; // Змінено на 15, щоб платформи рухались швидше
 
-            // Calculate the speed increment based on how much of the screen is filled or if any platform is out of view
-            const filledHeight = screenHeight - (prevPlatforms[0]?.bottom || 0);
-            const isFilledMoreThan75Percent = filledHeight > (0.75 * screenHeight);
-
-            // Check if any platform is out of view
-            const isAnyPlatformOutOfView = prevPlatforms.some(platform => platform.bottom <= 0);
-
-            // Increase speed if screen is more than 75% filled or any platform is out of view
-            const platformSpeed = platformSpeedBase + platformOffset / 50 + (isFilledMoreThan75Percent || isAnyPlatformOutOfView ? platformSpeedIncrement : 0);
+            // Розрахунок швидкості платформи
+            const platformSpeed = platformSpeedBase + platformOffset / 50;
 
             const newPlatforms = prevPlatforms.map((platform) => {
                 let newLeft = platform.left;
 
-                // Move platforms downward, faster if the screen is filled more or platforms are out of view
-                const newBottom = platform.bottom - platformSpeed - 10;
+                // Рух платформ вниз
+                const newBottom = platform.bottom - platformSpeed - 6;
 
-                // Handle moving platforms
+                // Рухомі платформи
                 if (platform.type === 2) {
                     if (platform.direction === 'right') {
                         newLeft += 2;
@@ -112,19 +108,20 @@ function Game({telegram_Id}) {
                 return { ...platform, bottom: newBottom, left: newLeft };
             });
 
-            // Add new platforms when existing platforms disappear
-            if (newPlatforms[0].bottom < 150) {
+            // Додати нові платформи, коли існуючі платформи зникають
+            if (newPlatforms[0].bottom < 100) {
                 newPlatforms.shift();
                 setScore((prevScore) => {
                     const newScore = prevScore + 1;
-                    newPlatforms.push(makeOneNewPlatform(window.innerHeight, newScore));  // Add a new platform
+                    newPlatforms.push(makeOneNewPlatform(window.innerHeight, newScore));  // Додати нову платформу
                     return newScore;
                 });
             }
 
             return newPlatforms;
         });
-    }, []);
+    }, [makeOneNewPlatform]);
+
 
 
     const moveMovingPlatforms = useCallback(() => {
@@ -153,34 +150,36 @@ function Game({telegram_Id}) {
         });
     }, []);
 
-
     const jump = useCallback(() => {
         setDoodler((prevDoodler) => {
             let newLeft = prevDoodler.left;
 
-            // Character movement to the left and right
+            // Move left or right based on direction
             if (direction === 'left' && prevDoodler.left > 0) {
                 newLeft = prevDoodler.left - 5;
-            } else if (direction === 'right' && prevDoodler.left < 340) {
+            } else if (direction === 'right' && prevDoodler.left < window.innerWidth - 50) {
                 newLeft = prevDoodler.left + 5;
             }
 
-            // Fixed jump height
-         // Define a consistent jump height
+            // Define jump characteristics
+            const maxJumpHeight = 85; // Max jump height from starting point
+            const jumpHeight = prevDoodler.bottom - prevDoodler.startPoint;
 
-            if (prevDoodler.bottom > prevDoodler.startPoint + maxJumpHeight) {
-                // Make the doodler stop jumping further
+            // Ensure that the character does not jump higher than the maxJumpHeight
+            if (jumpHeight >= maxJumpHeight) {
                 return { ...prevDoodler, isJumping: false };
             }
 
-            // Move platforms only if jumping higher
-            if (prevDoodler.bottom > window.innerHeight/2 - 100) {
-                movePlatforms();  // Move platforms to give illusion of doodler moving upward
+            // Move doodler up if jumping
+            if (prevDoodler.isJumping) {
+                movePlatforms(); // Move platforms to give the illusion of Doodler moving upward
+                return { ...prevDoodler, bottom: prevDoodler.bottom + 4, left: newLeft };
             }
 
-            return { ...prevDoodler, bottom: prevDoodler.bottom + 10, left: newLeft };
+            return prevDoodler; // Return unchanged if not jumping
         });
     }, [direction, movePlatforms]);
+
 
 
     const fall = useCallback(() => {
@@ -195,7 +194,7 @@ function Game({telegram_Id}) {
                 gameOver();
             }
 
-            return { ...prevDoodler, bottom: prevDoodler.bottom - 8, left: newLeft };
+            return { ...prevDoodler, bottom: prevDoodler.bottom - 6, left: newLeft };
         });
     }, [direction]);
     const updateUserGameBalance = async () => {
@@ -301,13 +300,11 @@ function Game({telegram_Id}) {
     const createPlatforms = useCallback(() => {
         const windowHeight = window.innerHeight;
         const visibleHeight = windowHeight - 100; // Adjust based on header/footer or any fixed height
-        let platformGap = visibleHeight / platformCount;  // Calculate the gap based on platform count
+        let platformGap = visibleHeight / platformCount; // Calculate the gap based on platform count
 
-        // Ensure platformGap is at least maxJumpHeight + some buffer (e.g., 20)
-        const minimumGap = maxJumpHeight + 20; // Adding some buffer to avoid immediate landing
-
-        if (platformGap < minimumGap) {
-            platformGap = minimumGap;
+        // Ensure platformGap does not exceed 130
+        if (platformGap > 75) {
+            platformGap = 75;
         }
 
         const newPlatforms = [];
@@ -317,7 +314,8 @@ function Game({telegram_Id}) {
             newPlatforms.push(newPlatform);
         }
         return [newPlatforms, newPlatforms[0].left];
-    }, [makeOneNewPlatform, platformCount, maxJumpHeight]);
+    }, [makeOneNewPlatform, platformCount]);
+
     const createDoodler = useCallback((doodlerBottom, doodlerLeft) => ({
         bottom: doodlerBottom,
         left: doodlerLeft,
@@ -338,8 +336,8 @@ function Game({telegram_Id}) {
         // Calculate the number of platforms based on the window size
         const calculatePlatformCount = () => {
             const windowHeight = window.innerHeight;
-            const platformGap = 100; // Desired gap between platforms
-            const calculatedCount = Math.ceil(windowHeight / platformGap);
+            const maxGap = 75; // Maximum desired gap between platforms
+            const calculatedCount = Math.ceil(windowHeight / maxGap);
             setPlatformCount(calculatedCount);
         };
 
@@ -359,7 +357,7 @@ function Game({telegram_Id}) {
     const handleTouchStart = useCallback((event) => {
         const touchX = event.touches[0].clientX;
         const halfScreenWidth = window.innerWidth / 2 + 100;
-        if (isGameOver) {
+        if (isGameOver && user.attempts_left > 0) {
             fetchUserAttempts(telegram_Id)
             start();
         }
@@ -375,7 +373,7 @@ function Game({telegram_Id}) {
     }, []);
 
     const handleKeyDown = useCallback((event) => {
-        if (event.key === 'Enter' && isGameOver ) {
+        if (event.key === 'Enter' && isGameOver && user.attempts_left > 0) {
             fetchUserAttempts(telegram_Id)
             start();
         } else if (event.key === 'ArrowLeft') {
