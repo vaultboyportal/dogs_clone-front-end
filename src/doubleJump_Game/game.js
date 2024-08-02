@@ -1,4 +1,4 @@
-import {useState, useEffect, useCallback, useContext} from 'react';
+import {useState, useEffect, useCallback, useContext,useRef} from 'react';
 import './game.css';
 import {UserContext} from "../context/UserContext";
 import axios from 'axios';
@@ -43,6 +43,7 @@ function Game({telegram_Id}) {
     const [platformCount, setPlatformCount] =  useState(20);;
     const startPoint = 100;
     const { rewards, setRewards } = useContext(RewardsContext);
+    const balanceUpdatedRef = useRef(false);
     const makeOneNewPlatform = useCallback((bottom, score) => {
         const left = Math.random() * (window.innerWidth - 85);
         let type = 1; // Статичні платформи за замовчуванням
@@ -60,11 +61,11 @@ function Game({telegram_Id}) {
         }
 
         if (score > 100) {
-            if (Math.random() < 0.1) { // 10% chance for game over platforms
+            if (Math.random() < 0.2) { // 10% chance for game over platforms
                 type = 4;
             }
         }
-        if (score > 500) {
+        if (score > 300) {
             if (Math.random() < 0.3) { // 10% chance for game over platforms
                 type = 4;
             }
@@ -165,7 +166,7 @@ function Game({telegram_Id}) {
             }
 
             // Fixed jump height
-            const maxJumpHeight = 200;  // Define a consistent jump height
+            const maxJumpHeight = 150;  // Define a consistent jump height
 
             if (prevDoodler.bottom > prevDoodler.startPoint + maxJumpHeight) {
                 // Make the doodler stop jumping further
@@ -177,7 +178,7 @@ function Game({telegram_Id}) {
                 movePlatforms();  // Move platforms to give illusion of doodler moving upward
             }
 
-            return { ...prevDoodler, bottom: prevDoodler.bottom + 16, left: newLeft };
+            return { ...prevDoodler, bottom: prevDoodler.bottom + 10, left: newLeft };
         });
     }, [direction, movePlatforms]);
 
@@ -193,15 +194,19 @@ function Game({telegram_Id}) {
             if (prevDoodler.bottom <= 10) {
                 gameOver();
             }
-            return { ...prevDoodler, bottom: prevDoodler.bottom - 17, left: newLeft };
+            return { ...prevDoodler, bottom: prevDoodler.bottom - 8, left: newLeft };
         });
     }, [direction]);
 
     const gameOver = useCallback(() => {
-        console.log(user.balance)
-        console.log(score)
-        const updatedBalance = user.balance + score;
-        updateUserBalance(updatedBalance);
+        if (!balanceUpdatedRef.current) { // Check if balance has not been updated yet
+            console.log(user.balance);
+            console.log(score);
+            const updatedBalance = user.balance + score;
+            updateUserGameBalance(updatedBalance);
+            balanceUpdatedRef.current = true; // Set ref to true after update
+        }
+
         setRewards(prevRewards => ({
             ...prevRewards,
             game: prevRewards.game + score,
@@ -300,7 +305,7 @@ function Game({telegram_Id}) {
     const handleTouchStart = useCallback((event) => {
         const touchX = event.touches[0].clientX;
         const halfScreenWidth = window.innerWidth / 2 + 100;
-        if (isGameOver ) {
+        if (isGameOver && user.attempts_left > 0 ) {
             fetchUserAttempts(telegram_Id)
             start();
         }
@@ -342,6 +347,31 @@ function Game({telegram_Id}) {
             }
         } catch (error) {
             console.error("Error fetching or using user attempts:", error);
+        }
+    };
+    const updateUserGameBalance = async (newBalance) => {
+        try {
+            const response = await axios.post(`${API_BASE_URL}/users/update_game_balance/`, {
+                telegram_id: telegram_Id,
+                balance: newBalance,
+            }, {
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            });
+
+            if (response.status === 200) {
+                console.log("Balance updated successfully on server:", response.data.user);
+                // Update the local context state
+                setUser((prevUser) => ({
+                    ...prevUser,
+                    balance: newBalance,
+                }));
+            } else {
+                console.error("Failed to update balance on server:", response.data.message);
+            }
+        } catch (error) {
+            console.error("Error updating balance on server:", error);
         }
     };
     return (
