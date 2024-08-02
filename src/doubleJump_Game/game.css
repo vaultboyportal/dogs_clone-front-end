@@ -16,15 +16,15 @@ body{
 }
 
 .doodler {
-    width: 120px;
+    width: 80px;
     height: auto;
     position: absolute;
     border-radius: 0.2px;
 }
 
 .platform {
-    width: 85px;
-    height: 15px;
+    width: 65px;
+    height: 20px;
     position: absolute;
     border-radius: 1px;
 }

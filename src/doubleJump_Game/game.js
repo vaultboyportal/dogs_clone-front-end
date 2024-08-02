@@ -40,7 +40,7 @@ function Game({telegram_Id}) {
     const [doodler, setDoodler] = useState({});
     const [score, setScore] = useState(0);
     const [direction, setDirection] = useState('none');
-    const [platformCount, setPlatformCount] =  useState(15);;
+    const [platformCount, setPlatformCount] =  useState(20);;
     const startPoint = 100;
     const { rewards, setRewards } = useContext(RewardsContext);
     const makeOneNewPlatform = useCallback((bottom, score) => {
@@ -64,24 +64,40 @@ function Game({telegram_Id}) {
                 type = 4;
             }
         }
+        if (score > 500) {
+            if (Math.random() < 0.3) { // 10% chance for game over platforms
+                type = 4;
+            }
+        }
         return { bottom, left, type, direction: 'right' };
     }, []);
     const movePlatforms = useCallback((platformOffset = 0) => {
         setPlatforms((prevPlatforms) => {
+            const screenHeight = window.innerHeight;
+            const platformSpeedBase = 8;
+            const platformSpeedIncrement = 2;
+
+            // Calculate the speed increment based on how much of the screen is filled or if any platform is out of view
+            const filledHeight = screenHeight - (prevPlatforms[0]?.bottom || 0);
+            const isFilledMoreThan75Percent = filledHeight > (0.75 * screenHeight);
+
+            // Check if any platform is out of view
+            const isAnyPlatformOutOfView = prevPlatforms.some(platform => platform.bottom <= 0);
+
+            // Increase speed if screen is more than 75% filled or any platform is out of view
+            const platformSpeed = platformSpeedBase + platformOffset / 50 + (isFilledMoreThan75Percent || isAnyPlatformOutOfView ? platformSpeedIncrement : 0);
+
             const newPlatforms = prevPlatforms.map((platform) => {
                 let newLeft = platform.left;
 
-                // Adjust platform speed based on the offset
-                const platformSpeed = 8 + platformOffset / 50;
-
-                // Move platforms downward, faster if the doodler is higher
+                // Move platforms downward, faster if the screen is filled more or platforms are out of view
                 const newBottom = platform.bottom - platformSpeed - 4;
 
                 // Handle moving platforms
                 if (platform.type === 2) {
                     if (platform.direction === 'right') {
                         newLeft += 2;
-                        if (newLeft >= 315) {
+                        if (newLeft >= window.innerWidth - 85) {
                             platform.direction = 'left';
                         }
                     } else {
@@ -108,6 +124,7 @@ function Game({telegram_Id}) {
             return newPlatforms;
         });
     }, []);
+
 
     const moveMovingPlatforms = useCallback(() => {
         setPlatforms((prevPlatforms) => {
@@ -213,13 +230,13 @@ function Game({telegram_Id}) {
                 }
 
                 platforms.forEach((platform, index) => {
-                    const doodlerTop = doodler.bottom + 70;
+                    const doodlerTop = doodler.bottom + 100;
                     const doodlerLeft = doodler.left;
-                    const doodlerRight = doodler.left + 60;
+                    const doodlerRight = doodler.left + 50;
 
-                    const platformTop = platform.bottom + 10;
+                    const platformTop = platform.bottom + 20;
                     const platformLeft = platform.left;
-                    const platformRight = platform.left + 50;
+                    const platformRight = platform.left + 40;
 
                     if (
                         doodlerTop >= platform.bottom &&
@@ -260,7 +277,7 @@ function Game({telegram_Id}) {
             const newPlatform = makeOneNewPlatform(newPlatBottom, 0); // Initial score is 0
             newPlatforms.push(newPlatform);
         }
-        setPlatformCount(8)
+        setPlatformCount(12)
         return [newPlatforms, newPlatforms[0].left];
     }, [makeOneNewPlatform]);
 
@@ -282,8 +299,8 @@ function Game({telegram_Id}) {
 
     const handleTouchStart = useCallback((event) => {
         const touchX = event.touches[0].clientX;
-        const halfScreenWidth = window.innerWidth / 2;
-        if (isGameOver && user.attempts_left>0) {
+        const halfScreenWidth = window.innerWidth / 2 + 100;
+        if (isGameOver ) {
             fetchUserAttempts(telegram_Id)
             start();
         }
