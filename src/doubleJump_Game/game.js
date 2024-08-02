@@ -7,10 +7,10 @@ function Platforms({ platforms }) {
     return platforms.map((platform, index) => (
         <div
             key={index}
-            className="platform"
+            className={`platform ${platform.isDeadly ? 'deadly' : ''}`}
             style={{ left: `${platform.left}px`, bottom: `${platform.bottom}px` }}
         >
-        <img src={`${process.env.PUBLIC_URL}/resources_directory/image_2024-08-02_14-22-29.webp`}/>
+            <img src={`${process.env.PUBLIC_URL}/resources_directory/platform_type_${platform.type}.webp`} />
         </div>
     ));
 }
@@ -38,30 +38,57 @@ function Game({telegram_Id}) {
     const platformCount = 7;
     const startPoint = 100;
 
-    const makeOneNewPlatform = useCallback((bottom) => {
+    const makeOneNewPlatform = useCallback((bottom, score) => {
         const left = Math.random() * 315;
-        return { bottom, left };
-    }, []);
+        let type = 1; // Статичні платформи за замовчуванням
 
+        if (score > 100) {
+            if (Math.random() < 0.5) { // 50% шанс для рухомих платформ
+                type = 2;
+            }
+        }
+
+        if (score > 200) {
+            if (Math.random() < 0.3) { // 30% шанс для ломаючих платформ
+                type = 3;
+            }
+        }
+
+        return { bottom, left, type, direction: 'right' };
+    }, []);
     const movePlatforms = useCallback(() => {
         if (doodler.bottom > 200) {
             setPlatforms((prevPlatforms) => {
-                const newPlatforms = prevPlatforms.map((platform) => ({
-                    ...platform,
-                    bottom: platform.bottom - 8,
-                }));
-                if (newPlatforms[0].bottom < 10) {
+                const newPlatforms = prevPlatforms.map((platform) => {
+                    let newLeft = platform.left;
+                    if (platform.type === 2) { // Рухомі платформи
+                        if (platform.direction === 'right') {
+                            newLeft += 2;
+                            if (newLeft >= 315) {
+                                platform.direction = 'left';
+                            }
+                        } else {
+                            newLeft -= 2;
+                            if (newLeft <= 0) {
+                                platform.direction = 'right';
+                            }
+                        }
+                    }
+                    return { ...platform, bottom: platform.bottom - 7, left: newLeft };
+                });
+                if (newPlatforms[0].bottom < 50) {
                     newPlatforms.shift();
                     setScore((prevScore) => {
                         const newScore = prevScore + 5;
+                        newPlatforms.push(makeOneNewPlatform(850, newScore));
                         return newScore;
                     });
-                    newPlatforms.push(makeOneNewPlatform(850));
                 }
                 return newPlatforms;
             });
         }
     }, [doodler.bottom, makeOneNewPlatform]);
+
 
     const fall = useCallback(() => {
         setDoodler((prevDoodler) => {
@@ -86,7 +113,7 @@ function Game({telegram_Id}) {
             } else if (direction === 'right' && prevDoodler.left < 340) {
                 newLeft = prevDoodler.left + 5 ;
             }
-            if (prevDoodler.bottom > prevDoodler.startPoint + 200) {
+            if (prevDoodler.bottom > prevDoodler.startPoint + 250) {
                 return { ...prevDoodler, isJumping: false };
             }
             return { ...prevDoodler, bottom: prevDoodler.bottom + 20, left: newLeft };
@@ -117,13 +144,26 @@ function Game({telegram_Id}) {
                 }
 
                 platforms.forEach((platform) => {
+                    const doodlerTop = doodler.bottom + 60; // Висота doodler
+                    const doodlerLeft = doodler.left;
+                    const doodlerRight = doodler.left + 60;
+
+                    const platformTop = platform.bottom + 15;
+                    const platformLeft = platform.left;
+                    const platformRight = platform.left + 85;
+
                     if (
-                        doodler.bottom >= platform.bottom &&
-                        doodler.bottom <= platform.bottom + 15 &&
-                        doodler.left + 60 >= platform.left &&
-                        doodler.left <= platform.left + 85 &&
-                        !doodler.isJumping
+                        doodlerTop >= platform.bottom &&
+                        doodler.bottom <= platformTop &&
+                        doodlerRight >= platformLeft &&
+                        doodlerLeft <= platformRight &&
+                        !doodler.isJumping &&
+                        doodler.bottom >= platformTop - 10 && // Покращення точності колізії
+                        doodler.bottom <= platformTop + 10
                     ) {
+                        if (platform.type === 3) {
+                            setPlatforms((prevPlatforms) => prevPlatforms.filter(p => p !== platform)); // Видалити ломаючу платформу
+                        }
                         setDoodler((prevDoodler) => ({
                             ...prevDoodler,
                             isJumping: true,
