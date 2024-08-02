@@ -373,7 +373,7 @@ function Game({telegram_Id}) {
     }, []);
 
     const handleKeyDown = useCallback((event) => {
-        if (event.key === 'Enter' && isGameOver && user.attempts_left > 0) {
+        if (event.key === 'Enter' && isGameOver) {
             fetchUserAttempts(telegram_Id)
             start();
         } else if (event.key === 'ArrowLeft') {
@@ -418,7 +418,7 @@ function Game({telegram_Id}) {
                     <div className="_mascote_94k9d_1 _centered_94k9d_13">
                         <img
                             id="home-mascote"
-                            src={`${process.env.PUBLIC_URL}/resources_directory/13A8E8C5-B501-4EA6-B4AC-6BD22BD7A9BA.webp`}
+                            src={`${process.env.PUBLIC_URL}/resources_directory/image_2024-08-03_02-24-40.webp`}
                             className="_doggy_94k9d_6 _width-82_94k9d_23 _mascote_1vo1r_60 _isRendered_1vo1r_63"
                             alt="Mascote"
                         />

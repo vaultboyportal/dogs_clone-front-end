@@ -34,7 +34,7 @@ const HomePage = () => {
 
     const imageSrc = animated
         ? `${process.env.PUBLIC_URL}/resources_directory/Frame7.webp`
-        : `${process.env.PUBLIC_URL}/resources_directory/13A8E8C5-B501-4EA6-B4AC-6BD22BD7A9BA.webp`;
+        : `${process.env.PUBLIC_URL}/resources_directory/image_2024-08-03_02-24-40.webp`;
 
     return (
         <div class="_page_1ulsb_1">

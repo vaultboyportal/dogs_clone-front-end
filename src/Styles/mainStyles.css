@@ -558,8 +558,10 @@
 }
 
 ._width-82_94k9d_23 {
-    width: 50vw;
-    height: 50vw;
+    width: 80vw;
+    height:auto;
+    margin-bottom: -20vw;
+    margin-top: -20vw;
     min-height: 84px
 }
 
