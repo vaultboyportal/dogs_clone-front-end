@@ -19,7 +19,7 @@ function Platforms({ platforms }) {
     ));
 }
 
-function Doodler({ doodler }) {
+function Doodler({ doodler, direction }) {
     return (
         <img
             className="doodler"
@@ -27,6 +27,7 @@ function Doodler({ doodler }) {
             style={{
                 left: `${doodler.left}px`,
                 bottom: `${doodler.bottom}px`,
+                transform: direction === 'right' ? 'scaleX(-1)' : 'none',
             }}
         />
     );
@@ -45,7 +46,7 @@ function Game({telegram_Id}) {
     const { rewards, setRewards } = useContext(RewardsContext);
     const scoreRef = useRef(score);
     const type4PlatformAddedRef = useRef(false);
-
+    const jumpSoundRef = useRef(null);
     useEffect(() => {
         scoreRef.current = score;
     }, [score]);
@@ -79,7 +80,7 @@ function Game({telegram_Id}) {
     const movePlatforms = useCallback((platformOffset = 0) => {
         setPlatforms((prevPlatforms) => {
             const screenHeight = window.innerHeight;
-            const platformSpeedBase = 7.5; // Змінено на 15, щоб платформи рухались швидше
+            const platformSpeedBase = 4; // Змінено на 15, щоб платформи рухались швидше
 
             // Розрахунок швидкості платформи
             const platformSpeed = platformSpeedBase + platformOffset / 50;
@@ -88,7 +89,7 @@ function Game({telegram_Id}) {
                 let newLeft = platform.left;
 
                 // Рух платформ вниз
-                const newBottom = platform.bottom - platformSpeed - 6;
+                const newBottom = platform.bottom - platformSpeed - 4;
 
                 // Рухомі платформи
                 if (platform.type === 2) {
@@ -123,6 +124,11 @@ function Game({telegram_Id}) {
     }, [makeOneNewPlatform]);
 
 
+    useEffect(() => {
+        if (jumpSoundRef.current) {
+            jumpSoundRef.current.volume = 0.3; // Тихіше
+        }
+    }, []);
 
     const moveMovingPlatforms = useCallback(() => {
         setPlatforms((prevPlatforms) => {
@@ -169,18 +175,15 @@ function Game({telegram_Id}) {
             if (jumpHeight >= maxJumpHeight) {
                 return { ...prevDoodler, isJumping: false };
             }
-
             if (prevDoodler.isJumping) {
-                // Move platforms if the doodler is above a certain height
-                if (prevDoodler.bottom > window.innerHeight / 2 - 100) {
-                    movePlatforms(); // Move platforms to give the illusion of doodler moving upward
+                movePlatforms();
+                if (jumpSoundRef.current) {
+                    jumpSoundRef.current.play();
                 }
-
-                // Increase the bottom position to simulate jumping
-                return { ...prevDoodler, bottom: prevDoodler.bottom + 10, left: newLeft };
+                return { ...prevDoodler, bottom: prevDoodler.bottom + 8, left: newLeft }; // Константне збільшення висоти стрибка
             }
 
-            return prevDoodler; // Return unchanged if not jumping
+            return prevDoodler; // Повернути без змін, якщо не стрибає
         });
     }, [direction, movePlatforms]);
 
@@ -198,7 +201,7 @@ function Game({telegram_Id}) {
                 gameOver();
             }
 
-            return { ...prevDoodler, bottom: prevDoodler.bottom - 6, left: newLeft };
+            return { ...prevDoodler, bottom: prevDoodler.bottom - 5, left: newLeft };
         });
     }, [direction]);
     const updateUserGameBalance = async () => {
@@ -364,7 +367,7 @@ function Game({telegram_Id}) {
     const handleTouchStart = useCallback((event) => {
         const touchX = event.touches[0].clientX;
         const halfScreenWidth = window.innerWidth / 2 + 100;
-        if (isGameOver  && user.attempts_left > 0) {
+        if (isGameOver  ) {
             fetchUserAttempts(telegram_Id)
             start();
         }
@@ -380,7 +383,7 @@ function Game({telegram_Id}) {
     }, []);
 
     const handleKeyDown = useCallback((event) => {
-        if (event.key === 'Enter' && isGameOver && user.attempts_left > 0) {
+        if (event.key === 'Enter' && isGameOver) {
             fetchUserAttempts(telegram_Id)
             start();
         } else if (event.key === 'ArrowLeft') {
@@ -412,9 +415,10 @@ function Game({telegram_Id}) {
         <div className="grid" onKeyDown={handleKeyDown} onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}  tabIndex="0" >
             {!isGameOver ? (
                 <>
+                    <audio ref={jumpSoundRef} src={`${process.env.PUBLIC_URL}/resources_directory/jump1.mp3`}/>
                     <div className="score">{score}</div>
-                    <Doodler doodler={doodler} />
-                    <Platforms platforms={platforms} />
+                    <Doodler doodler={doodler} direction={direction}/>
+                    <Platforms platforms={platforms}/>
                 </>
             ) : (
                 <div className="_view_sf2n5_1 _view_zhpdf_1" style={{opacity: 1}}>
