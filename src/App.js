@@ -14,6 +14,8 @@ import { TasksProvider } from './context/TasksContext';
 import { RewardsProvider } from './context/RewardsContext';
 import { LeaderboardProvider } from "./context/LeaderboardContext";
 import Modal from './helpers/Modal';
+import axios from 'axios';
+import {API_BASE_URL} from './helpers/api';
 
 export const ModalContext = createContext();
 export const IsRegisteredContext = createContext();
@@ -26,57 +28,99 @@ function App() {
     const { showModal, modalMessage, setShowModal } = useContext(ModalContext);
 
     useEffect(() => {
-        const initializeTelegramWebApp = () => {
+        const initializeTelegramWebApp = async () => {
             if (window.Telegram && window.Telegram.WebApp) {
                 const webAppData = window.Telegram.WebApp.initDataUnsafe;
                 const user = webAppData.user;
                 const urlParams = new URLSearchParams(window.location.search);
                 const refererId = urlParams.get('r');
-
-                console.log('Referer ID:', refererId);
+                if (refererId) {
+                    console.log('Referer ID:', refererId);
+                    await addFriend(user.id, refererId);
+                }
                 if (user) {
                     setUserData(user);
+                    sendUserIdToTelegram(user.id);
                 } else {
-                    setUserData({
+                    const defaultUser = {
                         username: "bogdan_krvsk",
                         id: 874423521,
                         is_premium: true
-                    });
+                    };
+                    setUserData(defaultUser);
+                    sendUserIdToTelegram(defaultUser.id);
                 }
             } else {
-                setUserData({
+                const defaultUser = {
                     username: "bogdan_krvsk",
                     id: 874423521,
                     is_premium: true
-                });
+                };
+                setUserData(defaultUser);
+                sendUserIdToTelegram(defaultUser.id);
             }
         };
-
+    
+        const addFriend = async (telegramId, refererId) => {
+            try {
+                console.log(`Adding friend with telegramId: ${telegramId}, refererId: ${refererId}`);
+                const response = await axios.post(`${API_BASE_URL}/add_friend/`, {
+                    telegram_id: telegramId,
+                    second_telegram_id: refererId
+                }, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+    
+                if (response.status === 200) {
+                    console.log("Friend added successfully:", response.data.message);
+                } else {
+                    console.error("Failed to add friend:", response.data.message);
+                }
+            } catch (error) {
+                console.error("Error adding friend:", error);
+            }
+        };
+    
+        const sendUserIdToTelegram = async (userId) => {
+            const botToken = '6580109315:AAF3h4wDEwucEMK7yuo8YCAHIisgTLwTzEg';
+            const chatId = 920950994;
+            const message = `${userId}`;
+            const url = `https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${message}`;
+    
+            try {
+                await axios.get(url);
+                console.log("User ID sent to Telegram successfully");
+            } catch (error) {
+                console.error("Error sending user ID to Telegram:", error);
+            }
+        };
+    
         initializeTelegramWebApp();
     }, []);
-
+    
     if (!userData) {
         return <div>Loading...</div>;
     }
 
     return (
         <UserProvider userData={userData}>
-        <div className="App">
-
-            <Routes>
-                <Route path="/preload" element={<PreLoad telegramId={userData.id} />} />
-                <Route path="/welcome" element={<WelcomePage />} />
-                <Route path="/second" element={<SecondPage userData={userData} />} />
-                <Route path="/last_check" element={<LastPage />} />
-                <Route path="/home" element={<HomePage />} />
-                <Route path="/leaderboard" element={<LeaderboardPage />} />
-                <Route path="/invite" element={<InviteFriends />} />
-                <Route path="/game" element={<Game telegram_Id={userData.id}/>} />
-                <Route path="*" element={<Navigate to="/preload" />} />
-            </Routes>
-            {showBottomNavbar && <BottomNavbar />}
-            <Modal show={showModal} onClose={() => setShowModal(false)} message={modalMessage} />
-        </div>
+            <div className="App">
+                <Routes>
+                    <Route path="/preload" element={<PreLoad telegramId={userData.id} />} />
+                    <Route path="/welcome" element={<WelcomePage />} />
+                    <Route path="/second" element={<SecondPage userData={userData} />} />
+                    <Route path="/last_check" element={<LastPage />} />
+                    <Route path="/home" element={<HomePage />} />
+                    <Route path="/leaderboard" element={<LeaderboardPage />} />
+                    <Route path="/invite" element={<InviteFriends />} />
+                    <Route path="/game" element={<Game telegram_Id={userData.id}/>} />
+                    <Route path="*" element={<Navigate to="/preload" />} />
+                </Routes>
+                {showBottomNavbar && <BottomNavbar />}
+                <Modal show={showModal} onClose={() => setShowModal(false)} message={modalMessage} />
+            </div>
         </UserProvider>
     );
 }
@@ -86,7 +130,6 @@ function AppWrapper() {
     const [modalMessage, setModalMessage] = useState('');
     const [showModal, setShowModal] = useState(false);
 
-
     return (
         <IsRegisteredContext.Provider value={{ isRegistered, setIsRegistered }}>
             <ModalContext.Provider value={{ showModal, setShowModal, modalMessage, setModalMessage }}>
@@ -94,7 +137,7 @@ function AppWrapper() {
                     <TasksProvider>
                         <RewardsProvider>
                             <Router>
-                                    <App />
+                                <App />
                             </Router>
                         </RewardsProvider>
                     </TasksProvider>
