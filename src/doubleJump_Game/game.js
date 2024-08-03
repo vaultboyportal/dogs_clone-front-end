@@ -113,7 +113,7 @@ function Game({telegram_Id}) {
                 newPlatforms.shift();
                 setScore((prevScore) => {
                     const newScore = prevScore + 1;
-                    newPlatforms.push(makeOneNewPlatform(window.innerHeight, newScore));  // Додати нову платформу
+                    newPlatforms.push(makeOneNewPlatform(window.innerHeight-50, newScore));  // Додати нову платформу
                     return newScore;
                 });
             }
@@ -305,8 +305,10 @@ function Game({telegram_Id}) {
         let platformGap = visibleHeight / platformCount; // Calculate the gap based on platform count
 
         // Ensure platformGap does not exceed 130
-        if (platformGap > 75) {
-            platformGap = 75;
+        if (platformGap > 55) {
+            platformGap = 55;
+        } else if (platformGap <10){
+            platformGap=10;
         }
 
         const newPlatforms = [];
