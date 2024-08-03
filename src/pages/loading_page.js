@@ -155,7 +155,7 @@ const RewardPage = ({ rewardData, onClaim }) => {
                         <div className="_valueTitle_mgd6s_78">years ago</div>
                     </div>
                     <div className="_valueSubTitle_mgd6s_86">
-                        Your Reward is #{reward}.<br/>
+                        +{reward} $UP.<br/>
                     </div>
                     <div
                         className="_root_oar9p_1 _type-white_oar9p_43 _fixedBottom_oar9p_110 _button_mgd6s_141"

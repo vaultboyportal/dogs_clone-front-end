@@ -20,7 +20,7 @@ const InvitePage = () => {
         <div className="_page_1ulsb_1">
             <div className="_gameView_1cr97_1" id="game-view">
                 <div className="_view_sf2n5_1 _view_1x19s_1" style={{ opacity: 1 }}>
-                    <div className="_backdrop_wo9zh_1"></div>
+                    <div className={`_backdrop_wo9zh_1  ${isLoading ? '_opened_wo9zh_16' : ''}`} ></div>
                     <div className={`_content_wo9zh_21 ${isLoading ? '_opened_wo9zh_16' : ''}`}>
                         <div className={`_cross_wo9zh_61 ${isLoading ? '_opened_wo9zh_16' : ''}`} onClick={handleClose}></div>
                         <div className={`_contentInner_wo9zh_44 ${isLoading ? '_opened_wo9zh_16' : ''}`}>
