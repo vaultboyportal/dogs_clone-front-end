@@ -41,7 +41,7 @@ function Game({telegram_Id}) {
     const [score, setScore] = useState(0);
     const [direction, setDirection] = useState('none');
     const [platformCount, setPlatformCount] = useState(0);  // Initially set to 0
-    const startPoint = 150;
+    const startPoint = 250;
     const { rewards, setRewards } = useContext(RewardsContext);
     const scoreRef = useRef(score);
     const type4PlatformAddedRef = useRef(false);
@@ -109,7 +109,7 @@ function Game({telegram_Id}) {
             });
 
             // Додати нові платформи, коли існуючі платформи зникають
-            if (newPlatforms[0].bottom < 100) {
+            if (newPlatforms[0].bottom < 82) {
                 newPlatforms.shift();
                 setScore((prevScore) => {
                     const newScore = prevScore + 1;
