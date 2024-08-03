@@ -430,7 +430,7 @@ function Game({telegram_Id}) {
                     <div className="instructions">
                         Your balance: {user.balance}
                     </div>
-                    <div className="instructions"> Your charges: {user.attempts_left}</div>
+                    <div className="instructions"> Game plays left: {user.attempts_left}</div>
                     <div class="_subtitleEmpty_1x19s_19 game_sub_title_ms718"> Use arrow keys or swipe to navigate. Don't hit the floor!
                     </div>
 

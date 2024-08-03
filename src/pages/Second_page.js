@@ -146,10 +146,7 @@ const SecondPage = (userData) => {
                 setIsCompleted((prev) => ({...prev, telegramPremium: true}))
                 window.Telegram.WebApp.HapticFeedback.impactOccurred('light');
             }, 3500),
-            setTimeout(() => {
-                setIsCompleted((prev) => ({...prev, ogStatus: true}))
-                window.Telegram.WebApp.HapticFeedback.impactOccurred('light');
-            }, 2000),
+
         ];
 
         return () => timers.forEach(clearTimeout);
@@ -264,39 +261,7 @@ const SecondPage = (userData) => {
                         </div>
                     </div>
                 </div>
-                <div style={{opacity: 1, transform: "none"}}>
-                    <div>
-                        <div className="_top_jzemx_39">
-                            <div className="_name_jzemx_33">OG Status Confirmed *</div>
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="24"
-                                height="24"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                className={`_checkmark_jzemx_23 ${isCompleted.ogStatus ? "_isCompleted_jzemx_26" : ""}`}
-                            >
-                                <path
-                                    d="M15 10L11 14L9 12M12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12C21 16.9706 16.9706 21 12 21Z"
-                                    stroke="#FFF"
-                                    strokeWidth="2"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                />
-                            </svg>
-                        </div>
-                        <div className="_loader_jzemx_15">
-                            <div
-                                className={`_loaderProgress_jzemx_51 ${isCompleted.ogStatus ? "_isCompleted_jzemx_26" : ""}`}
-                                style={{
-                                    width: isCompleted.ogStatus ? "100%" : "0%",
-                                    transitionDuration: "4000ms",
-                                    transitionTimingFunction: "ease-in",
-                                }}
-                            ></div>
-                        </div>
-                    </div>
-                </div>
+
             </div>
             <div
                 className={`_root_oar9p_1 _type-blue_oar9p_88 _fixedBottom_oar9p_110 _action_jzemx_61 ${
@@ -305,7 +270,6 @@ const SecondPage = (userData) => {
             >
                 Continue
             </div>
-            <div className="_name_jzemx_33 _title_elpw_3">*time since you joined Doc Profit VIP</div>
         </div>
     );
 };

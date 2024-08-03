@@ -560,7 +560,7 @@
 ._width-82_94k9d_23 {
     width: 120vw;
     height:auto;
-    margin-bottom: -20vw;
+    margin-bottom: -25vw;
     margin-top: -20vw;
     min-height: 84px
 }
@@ -661,6 +661,7 @@
 
 ._contentInner_wo9zh_44 {
     max-height: 100%;
+    z-index: 1000000;
     overflow: auto;
     padding-left: var(--safe-area-left);
     padding-right: var(--safe-area-right)
@@ -1290,7 +1291,7 @@ button.swiper-pagination-bullet {
 }
 
 ._title_1x19s_5 {
-    font-size: 29px;
+    font-size: 8vw;
     font-weight: 700;
     line-height: 40px;
     text-align: center;

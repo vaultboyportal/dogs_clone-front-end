@@ -93,7 +93,9 @@ const PreLoad = ({ telegramId }) => {
             if (response.status === 200 && response.data.status === "success") {
                 setTasks(response.data.tasks);
                 window.Telegram.WebApp.HapticFeedback.impactOccurred('heavy');
-                navigate("/home");
+                if(!showRewardPage) {
+                    navigate("/home");
+                }
             } else {
                 console.error('Error fetching tasks:', response.data.message);
             }
@@ -121,7 +123,7 @@ const PreLoad = ({ telegramId }) => {
     const handleRewardClaimed = () => {
         setRewards(prevRewards => ({
             ...prevRewards,
-            tasks: prevRewards.daily + rewardData.balance,
+            daily: prevRewards.daily + rewardData.balance,
             total: prevRewards.total + rewardData.balance
         }));
         updateUserBalance(user.balance+rewardData.balance);
@@ -133,7 +135,7 @@ const PreLoad = ({ telegramId }) => {
             {showRewardPage ? (
                 <RewardPage rewardData={rewardData} onClaim={handleRewardClaimed} />
             ) : (
-                <img id="loader" width="120" height="120" className="readyToSlide welcome-image" src={`${process.env.PUBLIC_URL}/resources_directory/image_2024-08-03_02-24-40.webp`} alt="Loading" />
+                <img id="loader" width="120" height="120" className="readyToSlide welcome-image" src={`${process.env.PUBLIC_URL}/resources_directory/image_2024-08-03_02-24-40.webp`} />
             )}
         </div>
     );
@@ -143,12 +145,28 @@ const RewardPage = ({ rewardData, onClaim }) => {
     const { streak, reward } = rewardData;
 
     return (
-        <div className="reward-page">
-            <h1>Daily Reward</h1>
-            <p>Congratulations! You've claimed your daily reward.</p>
-            <p>Current Streak: {streak} days</p>
-            <p>Reward: {reward} points</p>
-            <button onClick={onClaim}>Continue</button>
+        <div className="_page_1ulsb_1">
+            <div className="_view_sf2n5_1 _view_mgd6s_11" style={{ opacity: 1 }}>
+                <div className="_inner_mgd6s_1">
+                    <div className="_title_mgd6s_24">Daily Reward!</div>
+                    <div className="_subTitle_mgd6s_34">Congratulations! You've claimed your daily reward</div>
+                    <div className="_valueWrap_mgd6s_42">
+                        <div className="_value_mgd6s_42">{streak}</div>
+                        <div className="_valueTitle_mgd6s_78">years ago</div>
+                    </div>
+                    <div className="_valueSubTitle_mgd6s_86">
+                        Your Reward is #{reward}.<br/>
+                    </div>
+                    <div
+                        className="_root_oar9p_1 _type-white_oar9p_43 _fixedBottom_oar9p_110 _button_mgd6s_141"
+                        onClick={onClaim}
+                        style={{cursor: "pointer"}}
+                    >
+                        Continue
+                    </div>
+
+                </div>
+            </div>
         </div>
     );
 };

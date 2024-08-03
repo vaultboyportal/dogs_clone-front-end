@@ -144,6 +144,12 @@
     -moz-box-flex: 1;
     flex-grow: 1;
 }
+
+._barActive_mgd6s_117{
+    background-color: white!important;
+    opacity: 1 !important;
+}
+
 ._value_mgd6s_42 {
 
     color: #fff;
