@@ -170,7 +170,7 @@ function Game({telegram_Id}) {
                 return { ...prevDoodler, isJumping: false };
             }
 
-            if (prevDoodler.isJumping && jumpHeight < maxJumpHeight) {
+            if (prevDoodler.isJumping) {
                 // Move platforms if the doodler is above a certain height
                 if (prevDoodler.bottom > window.innerHeight / 2 - 100) {
                     movePlatforms(); // Move platforms to give the illusion of doodler moving upward
@@ -208,6 +208,7 @@ function Game({telegram_Id}) {
             const response = await axios.post(`${API_BASE_URL}/users/update_game_balance/`, {
                 telegram_id: telegram_Id,
                 balance: updatedBalance,
+                scoreRef:scoreRef.current
             }, {
                 headers: {
                     'Content-Type': 'application/json',
@@ -221,6 +222,8 @@ function Game({telegram_Id}) {
                     ...prevUser,
                     balance: updatedBalance,
                 }));
+                console.log(rewards.game)
+                console.log(scoreRef.current)
                 setRewards(prevRewards => ({
                     ...prevRewards,
                     game: prevRewards.game + scoreRef.current,
@@ -361,7 +364,7 @@ function Game({telegram_Id}) {
     const handleTouchStart = useCallback((event) => {
         const touchX = event.touches[0].clientX;
         const halfScreenWidth = window.innerWidth / 2 + 100;
-        if (isGameOver && user.attempts_left > 0) {
+        if (isGameOver ) {
             fetchUserAttempts(telegram_Id)
             start();
         }
