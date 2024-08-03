@@ -367,7 +367,7 @@ function Game({telegram_Id}) {
     const handleTouchStart = useCallback((event) => {
         const touchX = event.touches[0].clientX;
         const halfScreenWidth = window.innerWidth / 2 + 100;
-        if (isGameOver  ) {
+        if (isGameOver&& user.attempts_left>0  ) {
             fetchUserAttempts(telegram_Id)
             start();
         }
@@ -383,7 +383,7 @@ function Game({telegram_Id}) {
     }, []);
 
     const handleKeyDown = useCallback((event) => {
-        if (event.key === 'Enter' && isGameOver) {
+        if (event.key === 'Enter' && isGameOver && user.attempts_left>0) {
             fetchUserAttempts(telegram_Id)
             start();
         } else if (event.key === 'ArrowLeft') {
