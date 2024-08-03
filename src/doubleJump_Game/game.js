@@ -46,7 +46,6 @@ function Game({telegram_Id}) {
     const { rewards, setRewards } = useContext(RewardsContext);
     const scoreRef = useRef(score);
     const type4PlatformAddedRef = useRef(false);
-    const jumpSoundRef = useRef(null);
     useEffect(() => {
         scoreRef.current = score;
     }, [score]);
@@ -124,11 +123,7 @@ function Game({telegram_Id}) {
     }, [makeOneNewPlatform]);
 
 
-    useEffect(() => {
-        if (jumpSoundRef.current) {
-            jumpSoundRef.current.volume = 0.3; // Тихіше
-        }
-    }, []);
+
 
     const moveMovingPlatforms = useCallback(() => {
         setPlatforms((prevPlatforms) => {
@@ -177,10 +172,7 @@ function Game({telegram_Id}) {
             }
             if (prevDoodler.isJumping) {
                 movePlatforms();
-                if (jumpSoundRef.current) {
-                    jumpSoundRef.current.play();
-                }
-                return { ...prevDoodler, bottom: prevDoodler.bottom + 8, left: newLeft }; // Константне збільшення висоти стрибка
+                return { ...prevDoodler, bottom: prevDoodler.bottom + 5, left: newLeft }; // Constant increase in jump height
             }
 
             return prevDoodler; // Повернути без змін, якщо не стрибає
@@ -415,7 +407,6 @@ function Game({telegram_Id}) {
         <div className="grid" onKeyDown={handleKeyDown} onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}  tabIndex="0" >
             {!isGameOver ? (
                 <>
-                    <audio ref={jumpSoundRef} src={`${process.env.PUBLIC_URL}/resources_directory/jump1.mp3`}/>
                     <div className="score">{score}</div>
                     <Doodler doodler={doodler} direction={direction}/>
                     <Platforms platforms={platforms}/>
