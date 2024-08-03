@@ -173,7 +173,7 @@ function Game({telegram_Id}) {
             // Move doodler up if jumping
             if (prevDoodler.isJumping) {
                 movePlatforms(); // Move platforms to give the illusion of Doodler moving upward
-                return { ...prevDoodler, bottom: prevDoodler.bottom + 4, left: newLeft };
+                return { ...prevDoodler, bottom: prevDoodler.bottom + 10, left: newLeft };
             }
 
             return prevDoodler; // Return unchanged if not jumping

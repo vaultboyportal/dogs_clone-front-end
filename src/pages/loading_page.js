@@ -133,7 +133,7 @@ const PreLoad = ({ telegramId }) => {
             {showRewardPage ? (
                 <RewardPage rewardData={rewardData} onClaim={handleRewardClaimed} />
             ) : (
-                <img id="loader" width="120" height="120" className="readyToSlide" src={`${process.env.PUBLIC_URL}/resources_directory/13A8E8C5-B501-4EA6-B4AC-6BD22BD7A9BA.webp`} alt="Loading" />
+                <img id="loader" width="120" height="120" className="readyToSlide welcome-image" src={`${process.env.PUBLIC_URL}/resources_directory/image_2024-08-03_02-24-40.webp`} alt="Loading" />
             )}
         </div>
     );

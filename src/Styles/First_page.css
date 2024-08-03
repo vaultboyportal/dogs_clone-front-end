@@ -12,7 +12,7 @@ body {
 }
 
 .welcome-image {
-    max-width: 100%;
+    width: 120vw;
     height: auto;
     border-radius: 12px;
     margin-bottom: 24px;

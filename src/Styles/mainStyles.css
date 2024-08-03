@@ -177,9 +177,9 @@
     height: 242px;
 }
 #loader.readyToSlide {
-    top: 280px;
-    width: 237px;
-    height: 242px;
+    top: 50%;
+    width: 120vw;
+    height: auto;
 }
 ._type-white_oar9p_43:active {
     -webkit-transition-duration: 0s;
@@ -558,7 +558,7 @@
 }
 
 ._width-82_94k9d_23 {
-    width: 100vw;
+    width: 120vw;
     height:auto;
     margin-bottom: -20vw;
     margin-top: -20vw;
@@ -2430,7 +2430,7 @@ button.swiper-pagination-bullet {
 
 ._medal_iud9y_66 {
     font-size: 25px;
-    margin-right: -4px
+    margin-right: -4px;
 }
 
 ._skeleton_cicez_1 {
