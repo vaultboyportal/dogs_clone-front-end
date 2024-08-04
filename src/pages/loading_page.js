@@ -11,7 +11,7 @@ const PreLoad = ({ telegramId }) => {
     const { user, setUser, updateUserBalance } = useContext(UserContext);
     const { setRewards } = useContext(RewardsContext);
     const { setTasks } = useContext(TasksContext);
-    const { setUserStats, setLeaderboard, setCount } = useContext(LeaderboardContext);
+    const { setUserStats, setLeaderboard, setCount,setFriendsStats } = useContext(LeaderboardContext);
     const [rewardData, setRewardData] = useState(null);
     const [showRewardPage, setShowRewardPage] = useState(false);
 
@@ -21,16 +21,16 @@ const PreLoad = ({ telegramId }) => {
         if (hasFetchedData.current) return;
         const loadData = async () => {
             try {
-                hasFetchedData.current = true;
-                await fetchLeaderboard(telegramId);
-                await fetchUser(telegramId);
-                await fetchUserRewards(telegramId);
-                await fetchTasks(telegramId);
+                hasFetchedData.current = true
                 const rewardResult = await fetchDailyReward(telegramId);
                 if (rewardResult) {
                     setRewardData(rewardResult);
                     setShowRewardPage(true); // Show reward page if a new reward is claimed
-                }
+                };
+                await fetchLeaderboard(telegramId);
+                await fetchUser(telegramId);
+                await fetchUserRewards(telegramId);
+                await fetchTasks(telegramId);
             } catch (error) {
                 console.error("Error loading data", error);
             }
@@ -51,6 +51,8 @@ const PreLoad = ({ telegramId }) => {
                 setLeaderboard(leaderboardData.board);
                 setCount(leaderboardData.count);
                 setUserStats(leaderboardData.me);
+                setFriendsStats(leaderboardData.friends_stats)
+                console.log(leaderboardData.friends_stats)
             }
         } catch (error) {
             console.error("Error fetching leaderboard data:", error);
