@@ -1,12 +1,11 @@
 import React, { useState, useContext } from "react";
 import "../Styles/mainStyles.css";
 import { useNavigate } from "react-router-dom";
-import { UserContext } from '../context/UserContext'; // Импортировать UserContext
+import { UserContext } from '../context/UserContext';
 
-const InvitePage = () => {
+const InvitePage = ({telegramId}) => {
     const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
-    const { userData } = useContext(UserContext); // Получить userData из контекста
 
     const handleGoToScore = () => {
         window.Telegram.WebApp.HapticFeedback.impactOccurred('light');
@@ -19,7 +18,7 @@ const InvitePage = () => {
     };
 
     const handleCopyInviteLink = () => {
-        const inviteLink = `https://t.me/OnlyUP_game_bot/OnlyUp?startapp=${userData.id}`;
+        const inviteLink = `https://t.me/OnlyUP_game_bot/OnlyUp?startapp=${telegramId}`;
         navigator.clipboard.writeText(inviteLink).then(() => {
             alert('Invite link copied to clipboard');
         }).catch(err => {
@@ -28,7 +27,7 @@ const InvitePage = () => {
     };
 
     const handleShareInviteLink = () => {
-        const shareLink = `https://t.me/share/url?url=https://t.me/OnlyUP_game_bot/OnlyUp?startapp=${userData.id}`;
+        const shareLink = `https://t.me/share/url?url=https://t.me/OnlyUP_game_bot/OnlyUp?startapp=${telegramId}`;
         window.open(shareLink, '_blank');
     };
 
