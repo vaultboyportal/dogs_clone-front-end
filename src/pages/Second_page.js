@@ -12,7 +12,6 @@ const SecondPage = (userData) => {
         accountAge: false,
         activityLevel: false,
         telegramPremium: false,
-        ogStatus: false,
     });
     const { setUser } = useContext(UserContext);
     const { setRewards } = useContext(RewardsContext);
