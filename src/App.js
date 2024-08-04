@@ -114,7 +114,7 @@ function App() {
                     <Route path="/last_check" element={<LastPage />} />
                     <Route path="/home" element={<HomePage />} />
                     <Route path="/leaderboard" element={<LeaderboardPage />} />
-                    <Route path="/invite" element={<InviteFriends />} />
+                    <Route path="/invite" element={<InviteFriends telegramId={userData.id}/>} />
                     <Route path="/game" element={<Game telegram_Id={userData.id}/>} />
                     <Route path="*" element={<Navigate to="/preload" />} />
                 </Routes>
