@@ -2,7 +2,7 @@ import React, { useState, useContext } from "react";
 import "../Styles/mainStyles.css";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from '../context/UserContext';
-
+import { LeaderboardContext } from "../context/LeaderboardContext";
 const InvitePage = ({telegramId}) => {
     const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
