@@ -20,9 +20,7 @@ const InvitePage = ({telegramId}) => {
 
     const handleCopyInviteLink = () => {
         const inviteLink = `https://t.me/OnlyUP_game_bot/OnlyUp?startapp=${telegramId}`;
-        navigator.clipboard.writeText(inviteLink).then(() => {
-            alert('Invite link copied to clipboard');
-        }).catch(err => {
+        navigator.clipboard.writeText(inviteLink).then(() => {}).catch(err => {
             console.error('Failed to copy: ', err);
         });
     };
