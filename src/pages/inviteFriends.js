@@ -6,7 +6,8 @@ import { UserContext } from '../context/UserContext';
 const InvitePage = ({telegramId}) => {
     const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
-
+    const { friends_stats } = useContext(LeaderboardContext);
+    const friendsArray = Array.isArray(friends_stats) ? friends_stats : [];
     const handleGoToScore = () => {
         window.Telegram.WebApp.HapticFeedback.impactOccurred('light');
         setIsLoading(true);
@@ -56,7 +57,32 @@ const InvitePage = ({telegramId}) => {
                             alt="Mascote"
                         />
                     </div>
-                    <div className="_subtitleEmpty_1x19s_19">Tap on the button to invite your friends</div>
+                    {friendsArray.length === 0 ? (
+                        <div className="_subtitleEmpty_1x19s_19">Tap on the button to invite your friends</div>
+                    ) : (
+                        <>
+                            <div className="_boardTitle_zhpdf_23">{friendsArray.length} friends</div>
+                            {friendsArray.map((user, index) => (
+                                <div key={index} className="_item_iud9y_1">
+                                    <div className="_media_iud9y_8">
+                                        <img
+                                            className="_avatar_iud9y_19"
+                                            src={`https://ui-avatars.com/api/?name=${user.username}&background=random&color=fff`}
+                                            loading="lazy"
+                                            alt="Avatar"
+                                        />
+                                    </div>
+                                    <div className="_body_iud9y_25">
+                                        <div className="_text_iud9y_47">{user.username}</div>
+                                        <div className="_footer_iud9y_32">{user.score} $UP</div>
+                                    </div>
+                                    <div className="_details_iud9y_56">
+                                        <span className="_medal_iud9y_66" >+250 $UP</span>
+                                    </div>
+                                </div>
+                            ))}
+                        </>
+                    )}
                     <div className="_buttonWrap_1x19s_70">
                         <div className="_root_oar9p_1 _type-white_oar9p_43" onClick={handleGoToScore}>Invite friends</div>
                     </div>
