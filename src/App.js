@@ -33,7 +33,7 @@ function App() {
                 const webAppData = window.Telegram.WebApp.initDataUnsafe;
                 const user = webAppData.user;
                 const urlParams = new URLSearchParams(window.location.search);
-                const refererId = urlParams.get('r');
+                const refererId = urlParams.get('tgWebAppStartParam');
                 if (refererId) {
                     console.log('Referer ID:', refererId);
                     await addFriend(user.id, refererId);
