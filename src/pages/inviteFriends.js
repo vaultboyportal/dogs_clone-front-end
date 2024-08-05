@@ -22,7 +22,7 @@ const InvitePage = ({telegramId}) => {
         return /iPhone|iPad|iPod/i.test(navigator.userAgent);
     };
     const handleCopyInviteLink = () => {
-        const inviteLink = `https://t.me/OnlyUP_game_bot/OnlyUp?startapp=${telegramId}\n         Hey! Join me and earn some $UP on Solana with the OnlyUP mini-game!`;
+        const inviteLink = `https://t.me/OnlyUP_game_bot/OnlyUp?startapp=${telegramId}\n            Hey! Join me and earn some $UP on Solana with the OnlyUP mini-game!`;
         navigator.clipboard.writeText(inviteLink).then(() => {}).catch(err => {
             console.error('Failed to copy: ', err);
         });
