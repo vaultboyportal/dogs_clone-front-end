@@ -18,14 +18,21 @@ const InvitePage = ({telegramId}) => {
         window.Telegram.WebApp.HapticFeedback.impactOccurred('light');
         setIsLoading(false);
     };
-
+    const isIPhone = () => {
+        return /iPhone|iPad|iPod/i.test(navigator.userAgent);
+    };
     const handleCopyInviteLink = () => {
         const inviteLink = `https://t.me/OnlyUP_game_bot/OnlyUp?startapp=${telegramId}`;
         navigator.clipboard.writeText(inviteLink).then(() => {}).catch(err => {
             console.error('Failed to copy: ', err);
         });
-        setCopyMessage(true);
-        setTimeout(() => setCopyMessage(false), 5000);
+
+        if (isIPhone()) {
+            alert('Link was copied to the clipboard!!');
+        } else {
+            setCopyMessage(true);
+            setTimeout(() => setCopyMessage(false), 5000);
+        }
     };
 
     const handleShareInviteLink = () => {
