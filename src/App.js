@@ -13,7 +13,6 @@ import { UserProvider } from './context/UserContext';
 import { TasksProvider } from './context/TasksContext';
 import { RewardsProvider } from './context/RewardsContext';
 import { LeaderboardProvider } from "./context/LeaderboardContext";
-import Modal from './helpers/Modal';
 import axios from 'axios';
 import {API_BASE_URL} from './helpers/api';
 
@@ -119,7 +118,6 @@ function App() {
                     <Route path="*" element={<Navigate to="/preload" />} />
                 </Routes>
                 {showBottomNavbar && <BottomNavbar />}
-                <Modal show={showModal} onClose={() => setShowModal(false)} message={modalMessage} />
             </div>
         </UserProvider>
     );

@@ -4,10 +4,13 @@ import { LeaderboardContext } from '../../context/LeaderboardContext';
 
 const Leaderboard = () => {
     const { leaderboard } = useContext(LeaderboardContext);
-    console.log(leaderboard);
+
+    // Limit to top 500 participants
+    const topLeaderboard = leaderboard.slice(0, 500);
+
     return (
         <>
-            {leaderboard.map((user, index) => (
+            {topLeaderboard.map((user, index) => (
                 <div key={index} className="_item_iud9y_1">
                     <div className="_media_iud9y_8">
                         <img className="_avatar_iud9y_19"

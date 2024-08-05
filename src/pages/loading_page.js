@@ -96,7 +96,7 @@ const PreLoad = ({ telegramId }) => {
                 setTasks(response.data.tasks);
                 window.Telegram.WebApp.HapticFeedback.impactOccurred('heavy');
                 if(!showRewardPage) {
-                    navigate("/home");
+                 navigate("/home");
                 }
             } else {
                 console.error('Error fetching tasks:', response.data.message);
@@ -137,14 +137,25 @@ const PreLoad = ({ telegramId }) => {
             {showRewardPage ? (
                 <RewardPage rewardData={rewardData} onClaim={handleRewardClaimed} />
             ) : (
-                <img id="loader" width="120" height="120" className="readyToSlide welcome-image" src={`${process.env.PUBLIC_URL}/resources_directory/image_2024-08-03_02-24-40.webp`} />
+                <div className="_view_sf2n5_1 _view_1x19s_1" style={{opacity: 1}}>
+                    <div className="_title_1x19s_5">OnlyUP</div>
+                    <div className="_mascote_94k9d_1 _centered_94k9d_13">
+                        <img
+                            id="home-mascote"
+                            src={`${process.env.PUBLIC_URL}/resources_directory/image_2024-08-03_02-24-40.webp`}
+                            className="_doggy_94k9d_6 louve_t09 _width-82_94k9d_23 _mascote_1vo1r_60 _isRendered_1vo1r_63"
+                            alt="Mascote"
+                        />
+                    </div>
+                    <div class="_subtitleEmpty_1x19s_19">Loading...</div>
+                </div>
             )}
         </div>
     );
 };
 
-const RewardPage = ({ rewardData, onClaim }) => {
-    const { streak, reward } = rewardData;
+const RewardPage = ({rewardData, onClaim}) => {
+    const {streak, reward} = rewardData;
 
     return (
         <div className="_page_1ulsb_1">
@@ -154,7 +165,7 @@ const RewardPage = ({ rewardData, onClaim }) => {
                     <div className="_subTitle_mgd6s_34">Congratulations! You've claimed your daily reward</div>
                     <div className="_valueWrap_mgd6s_42">
                         <div className="_value_mgd6s_42">{streak}</div>
-                        <div className="_valueTitle_mgd6s_78">years ago</div>
+                        <div className="_valueTitle_mgd6s_78">daily  streak</div>
                     </div>
                     <div className="_valueSubTitle_mgd6s_86">
                         +{reward} $UP.<br/>

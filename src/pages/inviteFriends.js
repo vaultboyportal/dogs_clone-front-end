@@ -6,6 +6,7 @@ import { LeaderboardContext } from "../context/LeaderboardContext";
 const InvitePage = ({telegramId}) => {
     const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
+    const [copyMessage, setCopyMessage] = useState(false);
     const { friends_stats } = useContext(LeaderboardContext);
     const friendsArray = Array.isArray(friends_stats) ? friends_stats : [];
     const handleGoToScore = () => {
@@ -23,6 +24,8 @@ const InvitePage = ({telegramId}) => {
         navigator.clipboard.writeText(inviteLink).then(() => {}).catch(err => {
             console.error('Failed to copy: ', err);
         });
+        setCopyMessage(true);
+        setTimeout(() => setCopyMessage(false), 5000);
     };
 
     const handleShareInviteLink = () => {
@@ -44,6 +47,11 @@ const InvitePage = ({telegramId}) => {
                                 <div className="_root_oar9p_1 _type-white_oar9p_43" onClick={handleCopyInviteLink}>Copy invite link</div>
                                 <div className="_root_oar9p_1 _type-white_oar9p_43" onClick={handleShareInviteLink}>Share invite link</div>
                             </div>
+                            {copyMessage && (
+                                <div className="_widget_8wj">
+                                    Link was copied to the clipboard!
+                                </div>
+                            )}
                         </div>
                     </div>
                     <div className="_title_1x19s_5">Invite friends<br /> and get more $UP</div>

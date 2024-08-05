@@ -1290,13 +1290,19 @@ button.swiper-pagination-bullet {
 ._view_1x19s_1 {
     padding-top: 24px
 }
-
+.louve_t09{
+    margin-top: 0 !important;
+}
 ._title_1x19s_5 {
-    font-size: 8vw;
+    font-size: 6vw;
     font-weight: 700;
-    line-height: 40px;
+    line-height: 30px;
     text-align: center;
-    margin-bottom: 40px
+}
+
+._widget_8wj{
+    font-size: 5vw;
+    text-align: center;
 }
 
 ._subtitle_1x19s_13 {

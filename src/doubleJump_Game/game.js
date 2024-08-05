@@ -430,8 +430,11 @@ function Game({telegram_Id}) {
                     <div className="instructions">
                         Your balance: {user.balance}
                     </div>
-                    <div className="instructions"> Game plays left: {user.attempts_left}</div>
-                    <div class="_subtitleEmpty_1x19s_19 game_sub_title_ms718"> Use arrow keys or swipe to navigate. Don't hit the floor!
+                    {user.attempts_left > 0 ? (
+                        <div className="instructions"> Game plays left: {user.attempts_left}</div> ) : (
+                        <div className="instructions"> Wait 24hours to play again</div>
+            )}
+            <div class="_subtitleEmpty_1x19s_19 game_sub_title_ms718"> Use arrow keys or swipe to navigate. Don't hit the floor!
                     </div>
 
                 </div>

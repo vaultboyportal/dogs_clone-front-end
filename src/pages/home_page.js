@@ -82,7 +82,7 @@ const HomePage = () => {
                             <span className="_symbol_eubs4_9">$UP</span>
                         </div>
                     </div>
-                    <div className="_root_oar9p_1 _type-white_oar9p_43">Coming soon</div>
+                    <div className="_root_oar9p_1 _type-white_oar9p_43">Claim rewards (coming soon)</div>
                     <div className="_socialCarousel_1xku1_1">
                         <div className="swiper swiper-initialized swiper-horizontal swiper-backface-hidden">
                             <div className="swiper-wrapper">
