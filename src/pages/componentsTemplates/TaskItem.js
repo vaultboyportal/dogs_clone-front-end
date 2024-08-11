@@ -10,25 +10,50 @@ import { API_BASE_URL } from '../../helpers/api';
 
 const TaskItem = ({ title, footerText, url, index, setAnimated }) => {
     const [isChecked, setIsChecked] = useState(false);
+    const [timerExpired, setTimerExpired] = useState(false);
     const { setShowModal, setModalMessage } = useContext(ModalContext);
     const { completeTask } = useContext(TasksContext);
     const { user, setUser, updateUserBalance } = useContext(UserContext);
     const { rewards, setRewards } = useContext(RewardsContext);
     const history = useNavigate();
+    const taskDuration = 86400000; // 24 hours in milliseconds
 
-    // Unique key for localStorage
+    // Unique keys for localStorage
     const storageKey = `task-${index}-checked`;
+    const startTimeKey = `task-${index}-startTime`;
 
-    // Retrieve isChecked state from localStorage on component mount
+    // Retrieve isChecked state and startTime from localStorage on component mount
     useEffect(() => {
         const storedCheckedState = localStorage.getItem(storageKey);
+        const storedStartTime = localStorage.getItem(startTimeKey);
+
         if (storedCheckedState !== null) {
             setIsChecked(JSON.parse(storedCheckedState));
         }
-    }, [storageKey]);
+
+        if (storedStartTime) {
+            const elapsedTime = Date.now() - parseInt(storedStartTime, 10);
+            if (elapsedTime >= taskDuration) {
+                // If the time limit is exceeded, reset the task
+                setIsChecked(false);
+                setTimerExpired(true);
+                localStorage.removeItem(storageKey);
+                localStorage.removeItem(startTimeKey);
+            } else {
+                // If not yet expired, start the timer
+                const remainingTime = taskDuration - elapsedTime;
+                setTimeout(() => {
+                    setIsChecked(false);
+                    setTimerExpired(true);
+                    localStorage.removeItem(storageKey);
+                    localStorage.removeItem(startTimeKey);
+                }, remainingTime);
+            }
+        }
+    }, [storageKey, startTimeKey]);
 
     const handleShowModal = () => {
-        setModalMessage("Complete Task and try again");
+        setModalMessage("Time expired. Start the task again.");
         setShowModal(true);
     };
 
@@ -45,8 +70,8 @@ const TaskItem = ({ title, footerText, url, index, setAnimated }) => {
                 }
             });
 
-            if (response.status === 200) {
-                window.scrollTo({ top: 0, behavior: 'smooth' });
+            if (response.data.status === "success") {
+                window.scrollTo({top: 0, behavior: 'smooth'});
                 const updatedBalance = user.balance + rewardValue;
                 updateUserBalance(updatedBalance);
                 setRewards(prevRewards => ({
@@ -57,7 +82,11 @@ const TaskItem = ({ title, footerText, url, index, setAnimated }) => {
                 completeTask(index);
                 setAnimated(true);
             } else {
-                console.error("Failed to verify task:", response.data.message);
+                // Handle task expired or not started yet
+                console.error("Task failed:", response.data.message);
+                setIsChecked(false);
+                localStorage.removeItem(storageKey);  // Remove key from localStorage
+                localStorage.removeItem(startTimeKey);
                 handleShowModal();
             }
         } catch (error) {
@@ -66,17 +95,48 @@ const TaskItem = ({ title, footerText, url, index, setAnimated }) => {
         }
     };
 
+
     const handleButtonClick = () => {
         window.Telegram.WebApp.HapticFeedback.impactOccurred('medium');
-        if (!isChecked) {
-            window.open(url, '_blank');
-            setIsChecked(true);
-            localStorage.setItem(storageKey, true); // Save state to localStorage
+
+        if (timerExpired) {
+            setIsChecked(false);
+            localStorage.removeItem(storageKey);
+            localStorage.removeItem(startTimeKey);
+            handleShowModal();
+            return;
+        }
+
+        if (title === "Invite 3 friends in 24 hours") {
+            if (!isChecked) {
+                // Start the task and save the start time
+                axios.post(`${API_BASE_URL}/tasks/start/`, {
+                    telegram_id: user.telegram_id
+                }).then(() => {
+                    setIsChecked(true);
+                    localStorage.setItem(storageKey, true);
+                    localStorage.setItem(startTimeKey, Date.now().toString());
+                }).catch(error => {
+                    console.error("Failed to start task:", error);
+                    handleShowModal();
+                });
+            } else {
+                // Verify task completion
+                verifyTask(user.telegram_id, title, footerText);
+            }
         } else {
-            console.log(user.telegram_id);
-            verifyTask(user.telegram_id, title, footerText);
+            if (!isChecked) {
+                window.open(url, '_blank');
+                setIsChecked(true);
+                localStorage.setItem(storageKey, true);
+                localStorage.setItem(startTimeKey, Date.now().toString());
+            } else {
+                verifyTask(user.telegram_id, title, footerText);
+            }
         }
     };
+
+
 
     return (
         <div className="_listItem_1wi4k_1">
