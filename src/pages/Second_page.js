@@ -79,7 +79,9 @@ const SecondPage = (userData) => {
                     {"title": "OnlyUp Community", "url": "https://t.me/OnlyUP_Announcements", "reward": "+1000", "completed": false},
                     {"title": "OnlyUp on X like and tweet", "url": "https://x.com/onlyup1b/status/1820518292827902366?s=52&t=002GowCIMLy2LH0C0Gkt6w", "reward": "+1000", "completed": false },
                     {"title": "Invite 3 friends in 24 hours", "url": "", "reward": "+3000", "completed": false},
-                    {"title": "OnlyUp on X like, retweet and comment", "url": "https://x.com/OnlyUP1B/status/1822543659130048546", "reward": "+1000", "completed": false }
+                    {"title": "OnlyUp on X like, retweet and comment", "url": "https://x.com/OnlyUP1B/status/1822543659130048546", "reward": "+1000", "completed": false },
+                    {"title": "New post on X like, retweet and comment", "url": "https://x.com/onlyup1b/status/1823697112627818729?s=52&t=002GowCIMLy2LH0C0Gkt6w",
+                        "reward": "+5000", "completed": false}
                 ];
 
                 // Update tasks context
