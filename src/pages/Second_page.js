@@ -81,7 +81,9 @@ const SecondPage = (userData) => {
                     {"title": "Invite 3 friends in 24 hours", "url": "", "reward": "+3000", "completed": false},
                     {"title": "OnlyUp on X like, retweet and comment", "url": "https://x.com/OnlyUP1B/status/1822543659130048546", "reward": "+1000", "completed": false },
                     {"title": "New post on X like, retweet and comment", "url": "https://x.com/onlyup1b/status/1823697112627818729?s=52&t=002GowCIMLy2LH0C0Gkt6w",
-                        "reward": "+5000", "completed": false}
+                        "reward": "+5000", "completed": false},
+                    {"title": "$100 cash prize","url": "https://x.com/OnlyUP1B/status/1830280448049909976",
+                        "reward": "+2000", "completed": false},
                 ];
 
                 // Update tasks context
