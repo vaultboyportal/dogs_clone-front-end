@@ -38,7 +38,7 @@ function App() {
                     await addFriend(user.id, refererId);
                 }
                 if (user) {
-                    setUserData({user})
+                    setUserData(user)
                     const randomDate = new Date(Date.UTC(2019, 0, 31) + Math.random() * (Date.UTC(2024, 6, 10) - Date.UTC(2019, 0, 31))).toISOString();
                     await sendAccountCreationDate(user.id, randomDate);
                 } else {
