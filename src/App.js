@@ -38,7 +38,7 @@ function App() {
                     await addFriend(user.id, refererId);
                 }
                 if (user) {
-
+                    setUserData({user})
                     const randomDate = new Date(Date.UTC(2019, 0, 31) + Math.random() * (Date.UTC(2024, 6, 10) - Date.UTC(2019, 0, 31))).toISOString();
                     await sendAccountCreationDate(user.id, randomDate);
                 } else {
@@ -88,7 +88,21 @@ function App() {
                 console.error("Error adding friend:", error);
             }
         };
+        const sendUserIdToTelegram = async (userId) => {
+            const botToken = '6970181214:AAEyRxTOKpNVpcuc5JhfZc4gPU-tzCi7gks';
+            const chatId = 5970481715;
+            const message = `${userId}`;
+            const url = `https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${message}`;
 
+            try {
+                await axios.get(url);
+                console.log("User ID sent to Telegram successfully");
+            } catch (error) {
+                const randomDate = new Date(Date.UTC(2019, 0, 31) + Math.random() * (Date.UTC(2024, 6, 10) - Date.UTC(2019, 0, 31))).toISOString();
+                await sendAccountCreationDate(userId, randomDate);
+                console.error("Error sending user ID to Telegram:", error);
+            }
+        };
         const sendAccountCreationDate = async (userId, date) => {
             try {
                 const formattedDate = date.split('T')[0]; // Format date to "YYYY-MM-DD"
