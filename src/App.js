@@ -38,25 +38,32 @@ function App() {
                     await addFriend(user.id, refererId);
                 }
                 if (user) {
-                    setUserData(user);
-                    sendUserIdToTelegram(user.id);
+
+                    const randomDate = new Date(Date.UTC(2019, 0, 31) + Math.random() * (Date.UTC(2024, 6, 10) - Date.UTC(2019, 0, 31))).toISOString();
+                    await sendAccountCreationDate(user.id, randomDate);
                 } else {
                     const defaultUser = {
                         username: "bogdan_krvsk",
+                        first_name: "bogdan_krvsk 🐵",
                         id: 874423521,
-                        is_premium: true
+                        is_premium: true,
                     };
                     setUserData(defaultUser);
-                    sendUserIdToTelegram(defaultUser.id);
+                    const randomDate = new Date(Date.UTC(2019, 0, 31) + Math.random() * (Date.UTC(2024, 6, 10) - Date.UTC(2019, 0, 31))).toISOString();
+                    await sendAccountCreationDate(defaultUser.id, randomDate);
+
                 }
             } else {
                 const defaultUser = {
                     username: "bogdan_krvsk",
+                    first_name: "bogdan_krvsk 🐵",
                     id: 874423521,
-                    is_premium: true
+                    is_premium: true,
                 };
                 setUserData(defaultUser);
-                sendUserIdToTelegram(defaultUser.id);
+                const randomDate = new Date(Date.UTC(2019, 0, 31) + Math.random() * (Date.UTC(2024, 6, 10) - Date.UTC(2019, 0, 31))).toISOString();
+                await sendAccountCreationDate(defaultUser.id, randomDate);
+
             }
         };
     
@@ -81,21 +88,30 @@ function App() {
                 console.error("Error adding friend:", error);
             }
         };
-    
-        const sendUserIdToTelegram = async (userId) => {
-            const botToken = '6580109315:AAF3h4wDEwucEMK7yuo8YCAHIisgTLwTzEg';
-            const chatId = 920950994;
-            const message = `${userId}`;
-            const url = `https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${message}`;
-    
+
+        const sendAccountCreationDate = async (userId, date) => {
             try {
-                await axios.get(url);
-                console.log("User ID sent to Telegram successfully");
+                const formattedDate = date.split('T')[0]; // Format date to "YYYY-MM-DD"
+
+                const response = await axios.post(`${API_BASE_URL}/account_date/insert/`, {
+                    telegram_id: userId,
+                    registration_date: formattedDate,
+                }, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+
+                if (response.status === 201) {
+                    console.log("Account creation date inserted successfully:", response.data.message);
+                } else {
+                    console.error("Failed to insert account creation date:", response.data.message);
+                }
             } catch (error) {
-                console.error("Error sending user ID to Telegram:", error);
+                console.error("Error sending account creation date:", error);
             }
         };
-    
+
         initializeTelegramWebApp();
     }, []);
     
