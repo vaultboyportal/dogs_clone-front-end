@@ -84,6 +84,9 @@ const SecondPage = (userData) => {
                         "reward": "+5000", "completed": false},
                     {"title": "$100 cash prize","url": "https://x.com/OnlyUP1B/status/1830280448049909976",
                         "reward": "+2000", "completed": false},
+                    {"title": "X post like, retweet and comment",
+                        "url": "https://x.com/OnlyUP1B/status/1833436533925294288",
+                        "reward": "+5000", "completed": false},
                 ];
 
                 // Update tasks context
